@@ -4,6 +4,8 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_mem.h` — global OS-backed memory pool with typed bump-arena allocation,
+  reset, alignment, and optional secure clearing.
 - `rg_log.h` — lightweight severity-based logging with source locations,
   optional color and timestamps, and `rg_sprintf` formatting.
 - `rg_assert.h` — configurable assertion, ensure, and panic helpers with
@@ -39,9 +41,9 @@ build.bat test
 ```
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
-fallback, and secure formatter configurations, then runs the logging and
-assertion suites. On Windows x64, it assembles and links the included MASM
-helper automatically.
+fallback, and secure formatter configurations, then runs the logging,
+assertion, and memory suites. On Windows x64, it assembles and links the
+included MASM helper automatically.
 
 ## Usage
 

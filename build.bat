@@ -9,6 +9,7 @@ if /I "%TARGET%"=="test" goto test
 if /I "%TARGET%"=="test_sprintf" goto test_sprintf
 if /I "%TARGET%"=="test_log" goto test_log
 if /I "%TARGET%"=="test_assert" goto test_assert
+if /I "%TARGET%"=="test_mem" goto test_mem
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -39,6 +40,8 @@ if errorlevel 1 exit /b 1
 call "%~f0" test_log
 if errorlevel 1 exit /b 1
 call "%~f0" test_assert
+if errorlevel 1 exit /b 1
+call "%~f0" test_mem
 if errorlevel 1 exit /b 1
 echo All tests passed.
 exit /b 0
@@ -144,11 +147,45 @@ if errorlevel 1 exit /b 1
 echo All rg_assert tests passed.
 exit /b 0
 
+:test_mem
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building rg_mem tests...
+cl %COMMON_FLAGS% /std:c11 tests\test_mem.c /Fe:test_mem.exe
+if errorlevel 1 exit /b 1
+test_mem.exe
+if errorlevel 1 exit /b 1
+
+echo Building eager-commit rg_mem tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_MALLOC_LAZY_COMMIT=0 tests\test_mem.c /Fe:test_mem_eager.exe
+if errorlevel 1 exit /b 1
+test_mem_eager.exe
+if errorlevel 1 exit /b 1
+
+echo Building secure-reset rg_mem tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_MALLOC_SECURE tests\test_mem.c /Fe:test_mem_secure.exe
+if errorlevel 1 exit /b 1
+test_mem_secure.exe
+if errorlevel 1 exit /b 1
+
+echo Building C++ rg_mem compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 tests\test_mem.c /Fe:test_mem_cpp.exe
+if errorlevel 1 exit /b 1
+test_mem_cpp.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_mem tests passed.
+exit /b 0
+
 :clean
 del /q test_sprintf.exe test_sprintf_scalar.exe test_sprintf_asm.exe 2>nul
 del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
 del /q test_sprintf_secure.exe test_sprintf_asm_secure.exe 2>nul
 del /q test_log.exe test_log_fallback.exe test_assert.exe test_assert_disabled.exe 2>nul
-del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj 2>nul
+del /q test_mem.exe test_mem_eager.exe test_mem_secure.exe test_mem_cpp.exe 2>nul
+del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj 2>nul
 del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0
