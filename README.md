@@ -4,6 +4,10 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_log.h` — lightweight severity-based logging with source locations,
+  optional color and timestamps, and `rg_sprintf` formatting.
+- `rg_assert.h` — configurable assertion, ensure, and panic helpers with
+  optional `rg_log` integration.
 - `rg_sprintf_hybrid.h` — selects the assembly-accelerated formatter when its
   platform helper is linked and otherwise uses the portable implementation.
 - `rg_sprintf.h` — the portable formatter, covering the common `printf` subset
@@ -35,8 +39,9 @@ build.bat test
 ```
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
-fallback, and secure configurations. On Windows x64, it assembles and links the
-included MASM helper automatically.
+fallback, and secure formatter configurations, then runs the logging and
+assertion suites. On Windows x64, it assembles and links the included MASM
+helper automatically.
 
 ## Usage
 

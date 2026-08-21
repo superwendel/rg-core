@@ -6,7 +6,9 @@ if not defined TARGET set "TARGET=test"
 
 if /I "%TARGET%"=="clean" goto clean
 if /I "%TARGET%"=="test" goto test
-if /I "%TARGET%"=="test_sprintf" goto test
+if /I "%TARGET%"=="test_sprintf" goto test_sprintf
+if /I "%TARGET%"=="test_log" goto test_log
+if /I "%TARGET%"=="test_assert" goto test_assert
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -32,6 +34,16 @@ if errorlevel 1 exit /b 1
 exit /b 0
 
 :test
+call "%~f0" test_sprintf
+if errorlevel 1 exit /b 1
+call "%~f0" test_log
+if errorlevel 1 exit /b 1
+call "%~f0" test_assert
+if errorlevel 1 exit /b 1
+echo All tests passed.
+exit /b 0
+
+:test_sprintf
 call :ensure_compiler
 if errorlevel 1 exit /b 1
 
@@ -83,12 +95,60 @@ if errorlevel 1 exit /b 1
 test_sprintf_asm_secure.exe
 if errorlevel 1 exit /b 1
 
-echo All tests passed.
+echo All rg_sprintf tests passed.
+exit /b 0
+
+:test_log
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /std:c11 /W4 /WX /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building assembly helpers for rg_log...
+ml64 /nologo /c /Fo rg_sprintf_asm_x64.obj src\asm\sprintf\win_x64\rg_sprintf_asm_x64.asm
+if errorlevel 1 exit /b 1
+
+echo Building rg_log tests...
+cl %COMMON_FLAGS% /O2 /arch:AVX2 tests\test_log.c rg_sprintf_asm_x64.obj /Fe:test_log.exe
+if errorlevel 1 exit /b 1
+test_log.exe
+if errorlevel 1 exit /b 1
+
+echo Building rg_log portable fallback tests...
+cl %COMMON_FLAGS% /O2 /DRG_SPRINTF_NO_ASM /DRG_SPRINTF_NO_SIMD tests\test_log.c /Fe:test_log_fallback.exe
+if errorlevel 1 exit /b 1
+test_log_fallback.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_log tests passed.
+exit /b 0
+
+:test_assert
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /std:c11 /W4 /WX /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building rg_assert tests...
+cl %COMMON_FLAGS% /O2 tests\test_assert.c /Fe:test_assert.exe
+if errorlevel 1 exit /b 1
+test_assert.exe
+if errorlevel 1 exit /b 1
+
+echo Building disabled rg_assert tests...
+cl %COMMON_FLAGS% /O2 tests\test_assert_disabled.c /Fe:test_assert_disabled.exe
+if errorlevel 1 exit /b 1
+test_assert_disabled.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_assert tests passed.
 exit /b 0
 
 :clean
 del /q test_sprintf.exe test_sprintf_scalar.exe test_sprintf_asm.exe 2>nul
 del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
 del /q test_sprintf_secure.exe test_sprintf_asm_secure.exe 2>nul
-del /q test_sprintf.obj rg_sprintf_asm_x64.obj 2>nul
+del /q test_log.exe test_log_fallback.exe test_assert.exe test_assert_disabled.exe 2>nul
+del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj 2>nul
+del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0
