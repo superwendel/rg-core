@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="835" viewBox="0 0 1200 835"
+     role="img" aria-labelledby="title description">
+	<title id="title">rg_sprintf versus stb_sprintf benchmark</title>
+	<desc id="description">Grouped horizontal bars compare median nanoseconds per call for stb_sprintf, portable rg_sprintf, and assembly-accelerated rg_sprintf across nine formatting workloads. Lower values are better.</desc>
+	<style>
+		text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #24292f; }
+		.title { font-size: 26px; font-weight: 650; }
+		.subtitle { font-size: 14px; fill: #57606a; }
+		.label { font-size: 14px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+		.value { font-size: 11px; font-weight: 600; }
+		.tick { font-size: 12px; fill: #57606a; }
+		.legend { font-size: 13px; }
+		.grid { stroke: #d8dee4; stroke-width: 1; }
+		.axis { stroke: #8c959f; stroke-width: 1; }
+	</style>
+	<rect width="1200" height="835" fill="#ffffff"/>
+	<text class="title" x="60" y="42">rg_sprintf vs. stb_sprintf 1.10</text>
+	<text class="subtitle" x="60" y="68">Windows x64 · AVX2 · median of 7 pinned process runs · lower is better</text>
+
+	<g class="legend">
+		<rect x="220" y="91" width="14" height="14" rx="2" fill="#d65f5f"/>
+		<text x="242" y="103">stb_sprintf</text>
+		<rect x="375" y="91" width="14" height="14" rx="2" fill="#2a9d8f"/>
+		<text x="397" y="103">rg_sprintf portable C</text>
+		<rect x="590" y="91" width="14" height="14" rx="2" fill="#4169a1"/>
+		<text x="612" y="103">rg_sprintf x64 assembly</text>
+	</g>
+
+	<g>
+		<line class="grid" x1="220" y1="130" x2="220" y2="750"/>
+		<line class="grid" x1="357.5" y1="130" x2="357.5" y2="750"/>
+		<line class="grid" x1="495" y1="130" x2="495" y2="750"/>
+		<line class="grid" x1="632.5" y1="130" x2="632.5" y2="750"/>
+		<line class="grid" x1="770" y1="130" x2="770" y2="750"/>
+		<line class="grid" x1="907.5" y1="130" x2="907.5" y2="750"/>
+		<line class="grid" x1="1045" y1="130" x2="1045" y2="750"/>
+	</g>
+
+	<g>
+		<text class="label" x="202" y="181" text-anchor="end">%d</text>
+		<rect x="220" y="158" width="65.365" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="291.365" y="168">23.769</text>
+		<rect x="220" y="174" width="29.917" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="255.917" y="184">10.879</text>
+		<rect x="220" y="190" width="26.340" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="252.340" y="200">9.578</text>
+
+		<text class="label" x="202" y="247" text-anchor="end">%08u</text>
+		<rect x="220" y="224" width="90.698" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="316.698" y="234">32.981</text>
+		<rect x="220" y="240" width="121.429" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="347.429" y="250">44.156</text>
+		<rect x="220" y="256" width="68.541" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="294.541" y="266">24.924</text>
+
+		<text class="label" x="202" y="313" text-anchor="end">%x</text>
+		<rect x="220" y="290" width="84.340" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="310.340" y="300">30.669</text>
+		<rect x="220" y="306" width="46.203" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="272.203" y="316">16.801</text>
+		<rect x="220" y="322" width="37.923" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="263.923" y="332">13.790</text>
+
+		<text class="label" x="202" y="379" text-anchor="end">%lld</text>
+		<rect x="220" y="356" width="86.389" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="312.389" y="366">31.414</text>
+		<rect x="220" y="372" width="88.536" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="314.536" y="382">32.195</text>
+		<rect x="220" y="388" width="61.735" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="287.735" y="398">22.449</text>
+
+		<text class="label" x="202" y="445" text-anchor="end">%.6f</text>
+		<rect x="220" y="422" width="330.360" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="556.360" y="432">120.131</text>
+		<rect x="220" y="438" width="154.470" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="380.470" y="448">56.171</text>
+		<rect x="220" y="454" width="54.095" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="280.095" y="464">19.671</text>
+
+		<text class="label" x="202" y="511" text-anchor="end">%.6e</text>
+		<rect x="220" y="488" width="307.874" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="533.874" y="498">111.954</text>
+		<rect x="220" y="504" width="155.507" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="381.507" y="514">56.548</text>
+		<rect x="220" y="520" width="88.319" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="314.319" y="530">32.116</text>
+
+		<text class="label" x="202" y="577" text-anchor="end">%g</text>
+		<rect x="220" y="554" width="280.286" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="506.286" y="564">101.922</text>
+		<rect x="220" y="570" width="172.656" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="398.656" y="580">62.784</text>
+		<rect x="220" y="586" width="102.149" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="328.149" y="596">37.145</text>
+
+		<text class="label" x="202" y="643" text-anchor="end">%s</text>
+		<rect x="220" y="620" width="75.070" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="301.070" y="630">27.298</text>
+		<rect x="220" y="636" width="45.232" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="271.232" y="646">16.448</text>
+		<rect x="220" y="652" width="59.356" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="285.356" y="662">21.584</text>
+
+		<text class="label" x="202" y="709" text-anchor="end">mixed</text>
+		<rect x="220" y="686" width="842.394" height="12" rx="2" fill="#d65f5f"/>
+		<text class="value" x="1068.394" y="696">306.325</text>
+		<rect x="220" y="702" width="484.930" height="12" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="710.930" y="712">176.338</text>
+		<rect x="220" y="718" width="300.894" height="12" rx="2" fill="#4169a1"/>
+		<text class="value" x="526.894" y="728">109.416</text>
+	</g>
+
+	<line class="axis" x1="220" y1="750" x2="1100" y2="750"/>
+	<g class="tick" text-anchor="middle">
+		<text x="220" y="771">0</text>
+		<text x="357.5" y="771">50</text>
+		<text x="495" y="771">100</text>
+		<text x="632.5" y="771">150</text>
+		<text x="770" y="771">200</text>
+		<text x="907.5" y="771">250</text>
+		<text x="1045" y="771">300</text>
+	</g>
+	<text class="subtitle" x="660" y="806" text-anchor="middle">Median nanoseconds per call</text>
+</svg>
