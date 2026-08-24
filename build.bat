@@ -12,6 +12,7 @@ if /I "%TARGET%"=="test_assert" goto test_assert
 if /I "%TARGET%"=="test_mem" goto test_mem
 if /I "%TARGET%"=="test_hash" goto test_hash
 if /I "%TARGET%"=="test_random" goto test_random
+if /I "%TARGET%"=="test_algo" goto test_algo
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -48,6 +49,8 @@ if errorlevel 1 exit /b 1
 call "%~f0" test_hash
 if errorlevel 1 exit /b 1
 call "%~f0" test_random
+if errorlevel 1 exit /b 1
+call "%~f0" test_algo
 if errorlevel 1 exit /b 1
 echo All tests passed.
 exit /b 0
@@ -240,6 +243,33 @@ if errorlevel 1 exit /b 1
 echo All rg_random tests passed.
 exit /b 0
 
+:test_algo
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building rg_algo tests...
+cl %COMMON_FLAGS% /std:c11 /Fo:test_algo.obj tests\test_algo.c /Fe:test_algo.exe
+if errorlevel 1 exit /b 1
+test_algo.exe
+if errorlevel 1 exit /b 1
+
+echo Building configured rg_algo tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_ALGO_RADIX_BITS=4 /DRG_ALGO_STABLE_RUN=5 /DRG_ALGO_INSERTION_CUTOFF=9 /DRG_ALGO_STACK_CAP=1 /Fo:test_algo_config.obj tests\test_algo.c /Fe:test_algo_config.exe
+if errorlevel 1 exit /b 1
+test_algo_config.exe
+if errorlevel 1 exit /b 1
+
+echo Building C++ rg_algo compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 /Fo:test_algo_cpp.obj tests\test_algo.c /Fe:test_algo_cpp.exe
+if errorlevel 1 exit /b 1
+test_algo_cpp.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_algo tests passed.
+exit /b 0
+
 :clean
 del /q test_sprintf.exe test_sprintf_scalar.exe test_sprintf_asm.exe 2>nul
 del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
@@ -248,6 +278,8 @@ del /q test_log.exe test_log_fallback.exe test_assert.exe test_assert_disabled.e
 del /q test_mem.exe test_mem_eager.exe test_mem_secure.exe test_mem_cpp.exe 2>nul
 del /q test_hash.exe test_hash_eager.exe test_hash_cpp.exe 2>nul
 del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
+del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
+del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
 del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0

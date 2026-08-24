@@ -4,6 +4,8 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_algo.h` — macro-generated typed sorting, selection, searching, min/max,
+  and stable 32/64-bit radix sorting.
 - `rg_hash.h` — deterministic 64-bit hashing and arena-backed, typed
   robin-hood hash maps and sets.
 - `rg_random.h` — deterministic xoshiro256** generation with unbiased ranges,
@@ -46,8 +48,8 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, hash, and random suites. On Windows x64, it assembles and
-links the included MASM helper automatically.
+assertion, memory, hash, random, and algorithm suites. On Windows x64, it
+assembles and links the included MASM helper automatically.
 
 ## Usage
 
