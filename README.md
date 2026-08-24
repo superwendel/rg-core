@@ -6,6 +6,8 @@ Small, portable C libraries for game and realtime applications.
 
 - `rg_hash.h` — deterministic 64-bit hashing and arena-backed, typed
   robin-hood hash maps and sets.
+- `rg_random.h` — deterministic xoshiro256** generation with unbiased ranges,
+  shuffling, byte filling, and common probability distributions.
 - `rg_mem.h` — global OS-backed memory pool with typed bump-arena allocation,
   reset, alignment, and optional secure clearing.
 - `rg_log.h` — lightweight severity-based logging with source locations,
@@ -44,8 +46,8 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, and hash suites. On Windows x64, it assembles and links the
-included MASM helper automatically.
+assertion, memory, hash, and random suites. On Windows x64, it assembles and
+links the included MASM helper automatically.
 
 ## Usage
 
