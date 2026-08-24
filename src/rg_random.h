@@ -9,9 +9,9 @@
 //   RgRng rng;
 //   rg_rng_seed(&rng, 1234);
 //
-//   uint32_t v = rg_random_u32(&rng);
-//   float f = rg_random_range_f32(&rng, -1.0f, 1.0f);
-//   float n = rg_random_normal_f32(&rng, 0.0f, 1.0f);
+//   u32 v = rg_random_u32(&rng);
+//   f32 f = rg_random_range_f32(&rng, -1.0f, 1.0f);
+//   f32 n = rg_random_normal_f32(&rng, 0.0f, 1.0f);
 //
 // OPTIONS:
 //   #define RG_RANDOM_ASSERT(x)            - Custom assert macro
@@ -65,9 +65,9 @@
  */
 typedef struct RgRng
 {
-	uint64_t state[4];
-	uint32_t has_spare;
-	float spare;
+	u64 state[4];
+	u32 has_spare;
+	f32 spare;
 } RgRng;
 
 /**
@@ -75,8 +75,8 @@ typedef struct RgRng
  */
 typedef struct RgNormalCache
 {
-	uint32_t has_spare;
-	float spare;
+	u32 has_spare;
+	f32 spare;
 } RgNormalCache;
 
 // =============================================================================
@@ -88,92 +88,92 @@ typedef struct RgNormalCache
  * @param rng RNG state
  * @param seed 64-bit seed
  */
-RGINLINE void rg_rng_seed(RgRng* rng, uint64_t seed);
+RGINLINE void rg_rng_seed(RgRng* rng, u64 seed);
 
 /**
  * @brief Seed a RgRng from a 4x64 state (must not be all-zero)
  * @param rng RNG state
  * @param seed_state 4x64 seed values
  */
-RGINLINE void rg_rng_seed_state(RgRng* rng, const uint64_t seed_state[4]);
+RGINLINE void rg_rng_seed_state(RgRng* rng, const u64 seed_state[4]);
 
 /**
  * @brief Next 64-bit value from xoshiro256**
  * @param rng RNG state
  * @return 64-bit random value
  */
-RGINLINE uint64_t rg_rng_next_u64(RgRng* rng);
+RGINLINE u64 rg_rng_next_u64(RgRng* rng);
 
 /**
  * @brief Next 32-bit value from xoshiro256**
  * @param rng RNG state
  * @return 32-bit random value
  */
-RGINLINE uint32_t rg_rng_next_u32(RgRng* rng);
+RGINLINE u32 rg_rng_next_u32(RgRng* rng);
 
 // =============================================================================
 // PUBLIC API - Uniform Helpers
 // =============================================================================
 
 /**
- * @brief Uniform random uint32
+ * @brief Uniform random u32
  */
-RGINLINE uint32_t rg_random_u32(RgRng* rng);
+RGINLINE u32 rg_random_u32(RgRng* rng);
 
 /**
- * @brief Uniform random uint64
+ * @brief Uniform random u64
  */
-RGINLINE uint64_t rg_random_u64(RgRng* rng);
+RGINLINE u64 rg_random_u64(RgRng* rng);
 
 /**
- * @brief Uniform random float in [0, 1)
+ * @brief Uniform random f32 in [0, 1)
  */
-RGINLINE float rg_random_f32(RgRng* rng);
+RGINLINE f32 rg_random_f32(RgRng* rng);
 
 /**
- * @brief Uniform random double in [0, 1)
+ * @brief Uniform random f64 in [0, 1)
  */
-RGINLINE double rg_random_f64(RgRng* rng);
+RGINLINE f64 rg_random_f64(RgRng* rng);
 
 /**
- * @brief Unbiased random uint32 in [0, bound)
+ * @brief Unbiased random u32 in [0, bound)
  */
-RGINLINE uint32_t rg_random_bounded_u32(RgRng* rng, uint32_t bound);
+RGINLINE u32 rg_random_bounded_u32(RgRng* rng, u32 bound);
 
 /**
- * @brief Unbiased random uint64 in [0, bound)
+ * @brief Unbiased random u64 in [0, bound)
  */
-RGINLINE uint64_t rg_random_bounded_u64(RgRng* rng, uint64_t bound);
+RGINLINE u64 rg_random_bounded_u64(RgRng* rng, u64 bound);
 
 /**
- * @brief Random uint32 in [min, max] (inclusive)
+ * @brief Random u32 in [min, max] (inclusive)
  */
-RGINLINE uint32_t rg_random_range_u32(RgRng* rng, uint32_t min, uint32_t max);
+RGINLINE u32 rg_random_range_u32(RgRng* rng, u32 min, u32 max);
 
 /**
- * @brief Random uint64 in [min, max] (inclusive)
+ * @brief Random u64 in [min, max] (inclusive)
  */
-RGINLINE uint64_t rg_random_range_u64(RgRng* rng, uint64_t min, uint64_t max);
+RGINLINE u64 rg_random_range_u64(RgRng* rng, u64 min, u64 max);
 
 /**
- * @brief Random int32 in [min, max] (inclusive)
+ * @brief Random i32 in [min, max] (inclusive)
  */
-RGINLINE int32_t rg_random_range_i32(RgRng* rng, int32_t min, int32_t max);
+RGINLINE i32 rg_random_range_i32(RgRng* rng, i32 min, i32 max);
 
 /**
- * @brief Random int64 in [min, max] (inclusive)
+ * @brief Random i64 in [min, max] (inclusive)
  */
-RGINLINE int64_t rg_random_range_i64(RgRng* rng, int64_t min, int64_t max);
+RGINLINE i64 rg_random_range_i64(RgRng* rng, i64 min, i64 max);
 
 /**
- * @brief Random float in [min, max)
+ * @brief Random f32 in [min, max)
  */
-RGINLINE float rg_random_range_f32(RgRng* rng, float min, float max);
+RGINLINE f32 rg_random_range_f32(RgRng* rng, f32 min, f32 max);
 
 /**
- * @brief Random double in [min, max)
+ * @brief Random f64 in [min, max)
  */
-RGINLINE double rg_random_range_f64(RgRng* rng, double min, double max);
+RGINLINE f64 rg_random_range_f64(RgRng* rng, f64 min, f64 max);
 
 /**
  * @brief Random boolean (0 or 1)
@@ -211,7 +211,7 @@ RGINLINE void rg_random_fill_bytes(void* data, size_t size, RgRng* rng);
  * @param out0 First output
  * @param out1 Second output
  */
-RGINLINE void rg_random_normal2_f32(RgRng* rng, float mean, float stddev, float* out0, float* out1);
+RGINLINE void rg_random_normal2_f32(RgRng* rng, f32 mean, f32 stddev, f32* out0, f32* out1);
 
 /**
  * @brief Reset cached normal state
@@ -225,7 +225,7 @@ RGINLINE void rg_random_normal_cache_reset(RgNormalCache* cache);
  * @param stddev Standard deviation (must be > 0)
  * @return Sample from N(mean, stddev)
  */
-RGINLINE float rg_random_normal_f32(RgRng* rng, float mean, float stddev);
+RGINLINE f32 rg_random_normal_f32(RgRng* rng, f32 mean, f32 stddev);
 
 /**
  * @brief Normal (Gaussian) sample with cached spare
@@ -234,14 +234,14 @@ RGINLINE float rg_random_normal_f32(RgRng* rng, float mean, float stddev);
  * @param cache Cache state for spare sample
  * @return Sample from N(mean, stddev)
  */
-RGINLINE float rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache, float mean, float stddev);
+RGINLINE f32 rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache, f32 mean, f32 stddev);
 
 /**
  * @brief Exponential sample
  * @param lambda Rate parameter (must be > 0)
  * @return Sample from exponential distribution
  */
-RGINLINE float rg_random_exponential_f32(RgRng* rng, float lambda);
+RGINLINE f32 rg_random_exponential_f32(RgRng* rng, f32 lambda);
 
 // =============================================================================
 // IMPLEMENTATION
@@ -252,42 +252,42 @@ RGINLINE float rg_random_exponential_f32(RgRng* rng, float lambda);
 #define RG_RANDOM_SPLITMIX64_M2    0x94D049BB133111EBULL
 #define RG_RANDOM_PI_F32           3.14159265358979323846f
 
-RGINLINE uint64_t rg_random_rotl64(uint64_t value, int r)
+RGINLINE u64 rg_random_rotl64(u64 value, int r)
 {
 	return (value << r) | (value >> (64 - r));
 }
 
-RGINLINE uint64_t rg_random_splitmix64_next(uint64_t* state)
+RGINLINE u64 rg_random_splitmix64_next(u64* state)
 {
-	uint64_t z = (*state += RG_RANDOM_SPLITMIX64_GAMMA);
+	u64 z = (*state += RG_RANDOM_SPLITMIX64_GAMMA);
 	z = (z ^ (z >> 30)) * RG_RANDOM_SPLITMIX64_M1;
 	z = (z ^ (z >> 27)) * RG_RANDOM_SPLITMIX64_M2;
 	return z ^ (z >> 31);
 }
 
-RGINLINE uint64_t rg_random_mul_u64_wide(uint64_t a, uint64_t b, uint64_t* low)
+RGINLINE u64 rg_random_mul_u64_wide(u64 a, u64 b, u64* low)
 {
 #if defined(RG_RANDOM_USE_UMUL128)
-	uint64_t high;
+	u64 high;
 	*low = _umul128(a, b, &high);
 	return high;
 #elif defined(RG_RANDOM_USE_INT128)
 	unsigned __int128 product = (unsigned __int128)a * (unsigned __int128)b;
-	*low = (uint64_t)product;
-	return (uint64_t)(product >> 64);
+	*low = (u64)product;
+	return (u64)(product >> 64);
 #else
-	uint64_t a0 = (uint32_t)a;
-	uint64_t a1 = a >> 32;
-	uint64_t b0 = (uint32_t)b;
-	uint64_t b1 = b >> 32;
+	u64 a0 = (u32)a;
+	u64 a1 = a >> 32;
+	u64 b0 = (u32)b;
+	u64 b1 = b >> 32;
 
-	uint64_t product = a0 * b0;
-	uint64_t word0 = (uint32_t)product;
-	uint64_t carry = product >> 32;
+	u64 product = a0 * b0;
+	u64 word0 = (u32)product;
+	u64 carry = product >> 32;
 
 	product = a1 * b0 + carry;
-	uint64_t word1 = (uint32_t)product;
-	uint64_t word2 = product >> 32;
+	u64 word1 = (u32)product;
+	u64 word2 = product >> 32;
 
 	product = a0 * b1 + word1;
 	*low = (product << 32) + word0;
@@ -295,28 +295,28 @@ RGINLINE uint64_t rg_random_mul_u64_wide(uint64_t a, uint64_t b, uint64_t* low)
 #endif
 }
 
-RGINLINE int32_t rg_random_u32_to_i32(uint32_t value)
+RGINLINE i32 rg_random_u32_to_i32(u32 value)
 {
-	if (value <= (uint32_t)INT32_MAX)
+	if (value <= (u32)INT32_MAX)
 	{
-		return (int32_t)value;
+		return (i32)value;
 	}
-	return INT32_MIN + (int32_t)(value - ((uint32_t)INT32_MAX + 1u));
+	return INT32_MIN + (i32)(value - ((u32)INT32_MAX + 1u));
 }
 
-RGINLINE int64_t rg_random_u64_to_i64(uint64_t value)
+RGINLINE i64 rg_random_u64_to_i64(u64 value)
 {
-	if (value <= (uint64_t)INT64_MAX)
+	if (value <= (u64)INT64_MAX)
 	{
-		return (int64_t)value;
+		return (i64)value;
 	}
-	return INT64_MIN + (int64_t)(value - ((uint64_t)INT64_MAX + UINT64_C(1)));
+	return INT64_MIN + (i64)(value - ((u64)INT64_MAX + UINT64_C(1)));
 }
 
-RGINLINE void rg_rng_seed(RgRng* rng, uint64_t seed)
+RGINLINE void rg_rng_seed(RgRng* rng, u64 seed)
 {
 	RG_RANDOM_ASSERT(rng != NULL);
-	uint64_t sm = seed;
+	u64 sm = seed;
 	for (size_t i = 0; i < 4; i++)
 	{
 		rng->state[i] = rg_random_splitmix64_next(&sm);
@@ -331,7 +331,7 @@ RGINLINE void rg_rng_seed(RgRng* rng, uint64_t seed)
 	rng->spare = 0.0f;
 }
 
-RGINLINE void rg_rng_seed_state(RgRng* rng, const uint64_t seed_state[4])
+RGINLINE void rg_rng_seed_state(RgRng* rng, const u64 seed_state[4])
 {
 	RG_RANDOM_ASSERT(rng != NULL);
 	RG_RANDOM_ASSERT(seed_state != NULL);
@@ -349,11 +349,11 @@ RGINLINE void rg_rng_seed_state(RgRng* rng, const uint64_t seed_state[4])
 	rng->spare = 0.0f;
 }
 
-RGINLINE uint64_t rg_rng_next_u64(RgRng* rng)
+RGINLINE u64 rg_rng_next_u64(RgRng* rng)
 {
-	uint64_t* s = rng->state;
-	const uint64_t result = rg_random_rotl64(s[1] * 5ULL, 7) * 9ULL;
-	const uint64_t t = s[1] << 17;
+	u64* s = rng->state;
+	const u64 result = rg_random_rotl64(s[1] * 5ULL, 7) * 9ULL;
+	const u64 t = s[1] << 17;
 
 	s[2] ^= s[0];
 	s[3] ^= s[1];
@@ -366,66 +366,66 @@ RGINLINE uint64_t rg_rng_next_u64(RgRng* rng)
 	return result;
 }
 
-RGINLINE uint32_t rg_rng_next_u32(RgRng* rng)
+RGINLINE u32 rg_rng_next_u32(RgRng* rng)
 {
-	return (uint32_t)(rg_rng_next_u64(rng) >> 32);
+	return (u32)(rg_rng_next_u64(rng) >> 32);
 }
 
-RGINLINE uint32_t rg_random_u32(RgRng* rng)
+RGINLINE u32 rg_random_u32(RgRng* rng)
 {
 	return rg_rng_next_u32(rng);
 }
 
-RGINLINE uint64_t rg_random_u64(RgRng* rng)
+RGINLINE u64 rg_random_u64(RgRng* rng)
 {
 	return rg_rng_next_u64(rng);
 }
 
-RGINLINE float rg_random_f32(RgRng* rng)
+RGINLINE f32 rg_random_f32(RgRng* rng)
 {
-	uint32_t value = rg_rng_next_u32(rng);
-	return (float)(value >> 8) * (1.0f / 16777216.0f);
+	u32 value = rg_rng_next_u32(rng);
+	return (f32)(value >> 8) * (1.0f / 16777216.0f);
 }
 
-RGINLINE double rg_random_f64(RgRng* rng)
+RGINLINE f64 rg_random_f64(RgRng* rng)
 {
-	uint64_t value = rg_rng_next_u64(rng);
-	return (double)(value >> 11) * (1.0 / 9007199254740992.0);
+	u64 value = rg_rng_next_u64(rng);
+	return (f64)(value >> 11) * (1.0 / 9007199254740992.0);
 }
 
-RGINLINE uint32_t rg_random_bounded_u32(RgRng* rng, uint32_t bound)
+RGINLINE u32 rg_random_bounded_u32(RgRng* rng, u32 bound)
 {
 	if (bound == 0)
 	{
 		return 0;
 	}
 
-	uint32_t threshold = (uint32_t)(0u - bound) % bound;
+	u32 threshold = (u32)(0u - bound) % bound;
 	for (;;)
 	{
-		uint32_t value = rg_rng_next_u32(rng);
-		uint64_t product = (uint64_t)value * (uint64_t)bound;
-		uint32_t low = (uint32_t)product;
+		u32 value = rg_rng_next_u32(rng);
+		u64 product = (u64)value * (u64)bound;
+		u32 low = (u32)product;
 		if (low >= threshold)
 		{
-			return (uint32_t)(product >> 32);
+			return (u32)(product >> 32);
 		}
 	}
 }
 
-RGINLINE uint64_t rg_random_bounded_u64(RgRng* rng, uint64_t bound)
+RGINLINE u64 rg_random_bounded_u64(RgRng* rng, u64 bound)
 {
 	if (bound == 0)
 	{
 		return 0;
 	}
 
-	uint64_t threshold = (uint64_t)(0ULL - bound) % bound;
+	u64 threshold = (u64)(0ULL - bound) % bound;
 	for (;;)
 	{
-		uint64_t value = rg_rng_next_u64(rng);
-		uint64_t low;
-		uint64_t high = rg_random_mul_u64_wide(value, bound, &low);
+		u64 value = rg_rng_next_u64(rng);
+		u64 low;
+		u64 high = rg_random_mul_u64_wide(value, bound, &low);
 		if (low >= threshold)
 		{
 			return high;
@@ -433,7 +433,7 @@ RGINLINE uint64_t rg_random_bounded_u64(RgRng* rng, uint64_t bound)
 	}
 }
 
-RGINLINE uint32_t rg_random_range_u32(RgRng* rng, uint32_t min, uint32_t max)
+RGINLINE u32 rg_random_range_u32(RgRng* rng, u32 min, u32 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	if (min == max)
@@ -447,7 +447,7 @@ RGINLINE uint32_t rg_random_range_u32(RgRng* rng, uint32_t min, uint32_t max)
 	return min + rg_random_bounded_u32(rng, (max - min) + 1u);
 }
 
-RGINLINE uint64_t rg_random_range_u64(RgRng* rng, uint64_t min, uint64_t max)
+RGINLINE u64 rg_random_range_u64(RgRng* rng, u64 min, u64 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	if (min == max)
@@ -461,7 +461,7 @@ RGINLINE uint64_t rg_random_range_u64(RgRng* rng, uint64_t min, uint64_t max)
 	return min + rg_random_bounded_u64(rng, (max - min) + 1ULL);
 }
 
-RGINLINE int32_t rg_random_range_i32(RgRng* rng, int32_t min, int32_t max)
+RGINLINE i32 rg_random_range_i32(RgRng* rng, i32 min, i32 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	if (min == max)
@@ -473,13 +473,13 @@ RGINLINE int32_t rg_random_range_i32(RgRng* rng, int32_t min, int32_t max)
 		return rg_random_u32_to_i32(rg_rng_next_u32(rng));
 	}
 
-	uint32_t umin = (uint32_t)min;
-	uint32_t umax = (uint32_t)max;
-	uint32_t range = (umax - umin) + 1u;
+	u32 umin = (u32)min;
+	u32 umax = (u32)max;
+	u32 range = (umax - umin) + 1u;
 	return rg_random_u32_to_i32(umin + rg_random_bounded_u32(rng, range));
 }
 
-RGINLINE int64_t rg_random_range_i64(RgRng* rng, int64_t min, int64_t max)
+RGINLINE i64 rg_random_range_i64(RgRng* rng, i64 min, i64 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	if (min == max)
@@ -491,19 +491,19 @@ RGINLINE int64_t rg_random_range_i64(RgRng* rng, int64_t min, int64_t max)
 		return rg_random_u64_to_i64(rg_rng_next_u64(rng));
 	}
 
-	uint64_t umin = (uint64_t)min;
-	uint64_t umax = (uint64_t)max;
-	uint64_t range = (umax - umin) + 1ULL;
+	u64 umin = (u64)min;
+	u64 umax = (u64)max;
+	u64 range = (umax - umin) + 1ULL;
 	return rg_random_u64_to_i64(umin + rg_random_bounded_u64(rng, range));
 }
 
-RGINLINE float rg_random_range_f32(RgRng* rng, float min, float max)
+RGINLINE f32 rg_random_range_f32(RgRng* rng, f32 min, f32 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	return min + (max - min) * rg_random_f32(rng);
 }
 
-RGINLINE double rg_random_range_f64(RgRng* rng, double min, double max)
+RGINLINE f64 rg_random_range_f64(RgRng* rng, f64 min, f64 max)
 {
 	RG_RANDOM_ASSERT(min <= max);
 	return min + (max - min) * rg_random_f64(rng);
@@ -532,20 +532,20 @@ RGINLINE void rg_random_shuffle(void* data, size_t count, size_t stride, RgRng* 
 		return;
 	}
 
-	uint8_t* base = (uint8_t*)data;
+	u8* base = (u8*)data;
 	for (size_t i = count - 1; i > 0; i--)
 	{
-		size_t j = (size_t)rg_random_range_u64(rng, 0, (uint64_t)i);
+		size_t j = (size_t)rg_random_range_u64(rng, 0, (u64)i);
 		if (i == j)
 		{
 			continue;
 		}
 
-		uint8_t* a = base + i * stride;
-		uint8_t* b = base + j * stride;
+		u8* a = base + i * stride;
+		u8* b = base + j * stride;
 		for (size_t k = 0; k < stride; k++)
 		{
-			uint8_t tmp = a[k];
+			u8 tmp = a[k];
 			a[k] = b[k];
 			b[k] = tmp;
 		}
@@ -555,49 +555,49 @@ RGINLINE void rg_random_shuffle(void* data, size_t count, size_t stride, RgRng* 
 RGINLINE void rg_random_fill_bytes(void* data, size_t size, RgRng* rng)
 {
 	RG_RANDOM_ASSERT(data != NULL || size == 0);
-	uint8_t* dst = (uint8_t*)data;
+	u8* dst = (u8*)data;
 	size_t i = 0;
 	while (size - i >= 8)
 	{
-		uint64_t value = rg_rng_next_u64(rng);
-		dst[i + 0] = (uint8_t)(value);
-		dst[i + 1] = (uint8_t)(value >> 8);
-		dst[i + 2] = (uint8_t)(value >> 16);
-		dst[i + 3] = (uint8_t)(value >> 24);
-		dst[i + 4] = (uint8_t)(value >> 32);
-		dst[i + 5] = (uint8_t)(value >> 40);
-		dst[i + 6] = (uint8_t)(value >> 48);
-		dst[i + 7] = (uint8_t)(value >> 56);
+		u64 value = rg_rng_next_u64(rng);
+		dst[i + 0] = (u8)(value);
+		dst[i + 1] = (u8)(value >> 8);
+		dst[i + 2] = (u8)(value >> 16);
+		dst[i + 3] = (u8)(value >> 24);
+		dst[i + 4] = (u8)(value >> 32);
+		dst[i + 5] = (u8)(value >> 40);
+		dst[i + 6] = (u8)(value >> 48);
+		dst[i + 7] = (u8)(value >> 56);
 		i += 8;
 	}
 	if (i < size)
 	{
-		uint64_t value = rg_rng_next_u64(rng);
+		u64 value = rg_rng_next_u64(rng);
 		for (size_t j = 0; i < size; i++, j++)
 		{
-			dst[i] = (uint8_t)(value >> (j * 8));
+			dst[i] = (u8)(value >> (j * 8));
 		}
 	}
 }
 
-RGINLINE void rg_random_normal2_f32(RgRng* rng, float mean, float stddev, float* out0, float* out1)
+RGINLINE void rg_random_normal2_f32(RgRng* rng, f32 mean, f32 stddev, f32* out0, f32* out1)
 {
 	RG_RANDOM_ASSERT(stddev > 0.0f);
 	RG_RANDOM_ASSERT(out0 != NULL);
 	RG_RANDOM_ASSERT(out1 != NULL);
 	rng->has_spare = 0;
 
-	float u1 = rg_random_f32(rng);
-	float u2 = rg_random_f32(rng);
+	f32 u1 = rg_random_f32(rng);
+	f32 u2 = rg_random_f32(rng);
 	if (u1 < 1.0e-7f)
 	{
 		u1 = 1.0e-7f;
 	}
 
-	float r = sqrtf(-2.0f * logf(u1));
-	float theta = 2.0f * RG_RANDOM_PI_F32 * u2;
-	float z0 = r * cosf(theta);
-	float z1 = r * sinf(theta);
+	f32 r = sqrtf(-2.0f * logf(u1));
+	f32 theta = 2.0f * RG_RANDOM_PI_F32 * u2;
+	f32 z0 = r * cosf(theta);
+	f32 z1 = r * sinf(theta);
 
 	*out0 = mean + z0 * stddev;
 	*out1 = mean + z1 * stddev;
@@ -610,7 +610,7 @@ RGINLINE void rg_random_normal_cache_reset(RgNormalCache* cache)
 	cache->spare = 0.0f;
 }
 
-RGINLINE float rg_random_normal_f32(RgRng* rng, float mean, float stddev)
+RGINLINE f32 rg_random_normal_f32(RgRng* rng, f32 mean, f32 stddev)
 {
 	RG_RANDOM_ASSERT(stddev > 0.0f);
 	if (rng->has_spare)
@@ -619,24 +619,24 @@ RGINLINE float rg_random_normal_f32(RgRng* rng, float mean, float stddev)
 		return mean + rng->spare * stddev;
 	}
 
-	float u1 = rg_random_f32(rng);
-	float u2 = rg_random_f32(rng);
+	f32 u1 = rg_random_f32(rng);
+	f32 u2 = rg_random_f32(rng);
 	if (u1 < 1.0e-7f)
 	{
 		u1 = 1.0e-7f;
 	}
 
-	float r = sqrtf(-2.0f * logf(u1));
-	float theta = 2.0f * RG_RANDOM_PI_F32 * u2;
-	float z0 = r * cosf(theta);
-	float z1 = r * sinf(theta);
+	f32 r = sqrtf(-2.0f * logf(u1));
+	f32 theta = 2.0f * RG_RANDOM_PI_F32 * u2;
+	f32 z0 = r * cosf(theta);
+	f32 z1 = r * sinf(theta);
 
 	rng->spare = z1;
 	rng->has_spare = 1;
 	return mean + z0 * stddev;
 }
 
-RGINLINE float rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache, float mean, float stddev)
+RGINLINE f32 rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache, f32 mean, f32 stddev)
 {
 	RG_RANDOM_ASSERT(stddev > 0.0f);
 	RG_RANDOM_ASSERT(cache != NULL);
@@ -647,27 +647,27 @@ RGINLINE float rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache, flo
 		return mean + cache->spare * stddev;
 	}
 
-	float u1 = rg_random_f32(rng);
-	float u2 = rg_random_f32(rng);
+	f32 u1 = rg_random_f32(rng);
+	f32 u2 = rg_random_f32(rng);
 	if (u1 < 1.0e-7f)
 	{
 		u1 = 1.0e-7f;
 	}
 
-	float r = sqrtf(-2.0f * logf(u1));
-	float theta = 2.0f * RG_RANDOM_PI_F32 * u2;
-	float z0 = r * cosf(theta);
-	float z1 = r * sinf(theta);
+	f32 r = sqrtf(-2.0f * logf(u1));
+	f32 theta = 2.0f * RG_RANDOM_PI_F32 * u2;
+	f32 z0 = r * cosf(theta);
+	f32 z1 = r * sinf(theta);
 
 	cache->spare = z1;
 	cache->has_spare = 1;
 	return mean + z0 * stddev;
 }
 
-RGINLINE float rg_random_exponential_f32(RgRng* rng, float lambda)
+RGINLINE f32 rg_random_exponential_f32(RgRng* rng, f32 lambda)
 {
 	RG_RANDOM_ASSERT(lambda > 0.0f);
-	float u = rg_random_f32(rng);
+	f32 u = rg_random_f32(rng);
 	if (u < 1.0e-7f)
 	{
 		u = 1.0e-7f;

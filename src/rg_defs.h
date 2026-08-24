@@ -1,11 +1,12 @@
 // rg_defs - Shared compiler, platform, and utility definitions
 //
 // Part of the Reverse Gravity (rg_) core libraries.
-// Single-header containing compiler detection, platform macros, and common utilities.
+// Single-header containing primitive aliases, compiler detection, platform macros,
+// and common utilities.
 //
 // USAGE:
 //   #include "rg_defs.h"
-//   // Provides: RGINLINE, RG_LIKELY, RG_ALIGNOF, KB/MB/GB, etc.
+//   // Provides: u8-u64, i8-i64, f32/f64, RGINLINE, RG_ALIGNOF, etc.
 //
 // Author: Steven Wendel (superwendel)
 
@@ -14,6 +15,25 @@
 
 #include <stddef.h>
 #include <stdint.h>
+
+// =============================================================================
+// PRIMITIVE TYPE ALIASES
+// =============================================================================
+
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
+typedef int8_t i8;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64;
+
+typedef float f32;
+typedef double f64;
+
+typedef int32_t b32;
 
 // =============================================================================
 // COMPILER DETECTION

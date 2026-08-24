@@ -25,21 +25,21 @@ static int tests_failed;
 #define CHECK_CLOSE(actual, expected, tolerance)                              \
 	do                                                                         \
 	{                                                                          \
-		double check_actual = (double)(actual);                                \
-		double check_expected = (double)(expected);                            \
-		double check_difference = fabs(check_actual - check_expected);         \
-		CHECK(check_difference <= (double)(tolerance));                        \
+		f64 check_actual = (f64)(actual);                                      \
+		f64 check_expected = (f64)(expected);                                  \
+		f64 check_difference = fabs(check_actual - check_expected);            \
+		CHECK(check_difference <= (f64)(tolerance));                           \
 	} while (0)
 
 static void test_seed_and_golden_sequence(void)
 {
-	static const uint64_t expected_state[4] = {
+	static const u64 expected_state[4] = {
 		UINT64_C(0x161922c645ce50e8),
 		UINT64_C(0xad760cafa1697b60),
 		UINT64_C(0x3501ff44902ca50d),
 		UINT64_C(0x417cb9a826d831df),
 	};
-	static const uint64_t expected_values[16] = {
+	static const u64 expected_values[16] = {
 		UINT64_C(0xe01d6fafc557f1b9),
 		UINT64_C(0xbd627ebe4406b404),
 		UINT64_C(0x2c23132b578b57db),
@@ -57,7 +57,7 @@ static void test_seed_and_golden_sequence(void)
 		UINT64_C(0x64882e3cf23efab6),
 		UINT64_C(0xaad8240dc43a5e20),
 	};
-	static const uint32_t expected_u32[8] = {
+	static const u32 expected_u32[8] = {
 		UINT32_C(0xe01d6faf),
 		UINT32_C(0xbd627ebe),
 		UINT32_C(0x2c23132b),
@@ -80,7 +80,7 @@ static void test_seed_and_golden_sequence(void)
 	for (size_t i = 0; i < RG_ARRAY_COUNT(expected_u32); i++)
 		CHECK(rg_rng_next_u32(&rng) == expected_u32[i]);
 
-	uint64_t zero_state[4] = {0, 0, 0, 0};
+	u64 zero_state[4] = {0, 0, 0, 0};
 	rng.has_spare = 1;
 	rng.spare = 5.0f;
 	rg_rng_seed_state(&rng, zero_state);
@@ -88,16 +88,16 @@ static void test_seed_and_golden_sequence(void)
 	CHECK(rng.state[1] == 0 && rng.state[2] == 0 && rng.state[3] == 0);
 	CHECK(rng.has_spare == 0 && rng.spare == 0.0f);
 
-	uint64_t explicit_state[4] = {1, 2, 3, 4};
+	u64 explicit_state[4] = {1, 2, 3, 4};
 	rg_rng_seed_state(&rng, explicit_state);
 	CHECK(memcmp(rng.state, explicit_state, sizeof(explicit_state)) == 0);
 }
 
-static void check_wide_multiply(uint64_t a, uint64_t b,
-	                            uint64_t expected_high, uint64_t expected_low)
+static void check_wide_multiply(u64 a, u64 b,
+	                            u64 expected_high, u64 expected_low)
 {
-	uint64_t low = UINT64_MAX;
-	uint64_t high = rg_random_mul_u64_wide(a, b, &low);
+	u64 low = UINT64_MAX;
+	u64 high = rg_random_mul_u64_wide(a, b, &low);
 	CHECK(high == expected_high);
 	CHECK(low == expected_low);
 }
@@ -121,7 +121,7 @@ static void test_wide_multiply(void)
 
 static void test_bounded_golden_sequences(void)
 {
-	static const uint64_t bounds64[] = {
+	static const u64 bounds64[] = {
 		UINT64_C(1),
 		UINT64_C(2),
 		UINT64_C(3),
@@ -131,7 +131,7 @@ static void test_bounded_golden_sequences(void)
 		UINT64_C(0x8000000000000001),
 		UINT64_MAX,
 	};
-	static const uint64_t expected64[] = {
+	static const u64 expected64[] = {
 		UINT64_C(0),
 		UINT64_C(1),
 		UINT64_C(0),
@@ -141,8 +141,8 @@ static void test_bounded_golden_sequences(void)
 		UINT64_C(0x4a38297a8c7b66bb),
 		UINT64_C(0xe824c04694af22fd),
 	};
-	static const uint32_t bounds32[] = {1, 2, 3, 10, UINT32_MAX};
-	static const uint32_t expected32[] = {
+	static const u32 bounds32[] = {1, 2, 3, 10, UINT32_MAX};
+	static const u32 expected32[] = {
 		UINT32_C(0),
 		UINT32_C(1),
 		UINT32_C(0),
@@ -179,23 +179,23 @@ static void test_uniform_ranges(void)
 
 	for (size_t i = 0; i < 20000; i++)
 	{
-		uint32_t u32 = rg_random_range_u32(&rng, 5, 12);
-		uint64_t u64 = rg_random_range_u64(&rng, UINT64_C(0x100000000),
+		u32 value_u32 = rg_random_range_u32(&rng, 5, 12);
+		u64 value_u64 = rg_random_range_u64(&rng, UINT64_C(0x100000000),
 		                                          UINT64_C(0x100000123));
-		int32_t i32 = rg_random_range_i32(&rng, -700, 900);
-		int64_t i64 = rg_random_range_i64(&rng, INT64_C(-5000000000),
-		                                        INT64_C(7000000000));
-		float f32 = rg_random_f32(&rng);
-		double f64 = rg_random_f64(&rng);
-		float range_f32 = rg_random_range_f32(&rng, -3.0f, 7.0f);
-		double range_f64 = rg_random_range_f64(&rng, -11.0, 13.0);
+		i32 value_i32 = rg_random_range_i32(&rng, -700, 900);
+		i64 value_i64 = rg_random_range_i64(&rng, INT64_C(-5000000000),
+		                                          INT64_C(7000000000));
+		f32 value_f32 = rg_random_f32(&rng);
+		f64 value_f64 = rg_random_f64(&rng);
+		f32 range_f32 = rg_random_range_f32(&rng, -3.0f, 7.0f);
+		f64 range_f64 = rg_random_range_f64(&rng, -11.0, 13.0);
 
-		CHECK(u32 >= 5 && u32 <= 12);
-		CHECK(u64 >= UINT64_C(0x100000000) && u64 <= UINT64_C(0x100000123));
-		CHECK(i32 >= -700 && i32 <= 900);
-		CHECK(i64 >= INT64_C(-5000000000) && i64 <= INT64_C(7000000000));
-		CHECK(f32 >= 0.0f && f32 < 1.0f);
-		CHECK(f64 >= 0.0 && f64 < 1.0);
+		CHECK(value_u32 >= 5 && value_u32 <= 12);
+		CHECK(value_u64 >= UINT64_C(0x100000000) && value_u64 <= UINT64_C(0x100000123));
+		CHECK(value_i32 >= -700 && value_i32 <= 900);
+		CHECK(value_i64 >= INT64_C(-5000000000) && value_i64 <= INT64_C(7000000000));
+		CHECK(value_f32 >= 0.0f && value_f32 < 1.0f);
+		CHECK(value_f64 >= 0.0 && value_f64 < 1.0);
 		CHECK(range_f32 >= -3.0f && range_f32 <= 7.0f);
 		CHECK(range_f64 >= -11.0 && range_f64 <= 13.0);
 	}
@@ -219,19 +219,19 @@ static void test_uniform_ranges(void)
 
 static void test_shuffle_and_fill(void)
 {
-	static const uint32_t expected_shuffle[16] = {
+	static const u32 expected_shuffle[16] = {
 		1, 12, 3, 13, 14, 7, 4, 6, 0, 10, 2, 9, 11, 15, 8, 5,
 	};
-	static const uint8_t expected_bytes[19] = {
+	static const u8 expected_bytes[19] = {
 		0xb4, 0xea, 0xc8, 0x55, 0xeb, 0xa7, 0x44, 0x59, 0x7e, 0x86,
 		0xd8, 0x31, 0x3d, 0x4e, 0x62, 0x90, 0xc3, 0x15, 0x42,
 	};
-	uint32_t values[16];
-	uint8_t bytes[19] = {0};
+	u32 values[16];
+	u8 bytes[19] = {0};
 	RgRng rng;
 
 	for (size_t i = 0; i < RG_ARRAY_COUNT(values); i++)
-		values[i] = (uint32_t)i;
+		values[i] = (u32)i;
 	rg_rng_seed(&rng, 99);
 	rg_random_shuffle(values, RG_ARRAY_COUNT(values), sizeof(values[0]), &rng);
 	CHECK(memcmp(values, expected_shuffle, sizeof(values)) == 0);
@@ -242,7 +242,7 @@ static void test_shuffle_and_fill(void)
 
 	rg_rng_seed(&rng, 99);
 	RgRng unchanged = rng;
-	rg_random_shuffle(NULL, 0, sizeof(uint32_t), &rng);
+	rg_random_shuffle(NULL, 0, sizeof(u32), &rng);
 	CHECK(memcmp(&rng, &unchanged, sizeof(rng)) == 0);
 	rg_random_shuffle(values, RG_ARRAY_COUNT(values), 0, &rng);
 	CHECK(memcmp(&rng, &unchanged, sizeof(rng)) == 0);
@@ -269,16 +269,16 @@ static void test_distributions(void)
 	RgRng rng;
 	rg_rng_seed(&rng, 1234);
 
-	double sum = 0.0;
-	double sum_squares = 0.0;
+	f64 sum = 0.0;
+	f64 sum_squares = 0.0;
 	for (size_t i = 0; i < sample_count; i++)
 	{
-		float value = rg_random_normal_f32(&rng, 0.0f, 1.0f);
+		f32 value = rg_random_normal_f32(&rng, 0.0f, 1.0f);
 		sum += value;
-		sum_squares += (double)value * (double)value;
+		sum_squares += (f64)value * (f64)value;
 	}
-	double mean = sum / (double)sample_count;
-	double variance = sum_squares / (double)sample_count - mean * mean;
+	f64 mean = sum / (f64)sample_count;
+	f64 variance = sum_squares / (f64)sample_count - mean * mean;
 	CHECK_CLOSE(mean, 0.0, 0.02);
 	CHECK_CLOSE(sqrt(variance), 1.0, 0.02);
 
@@ -288,23 +288,23 @@ static void test_distributions(void)
 	sum = 0.0;
 	for (size_t i = 0; i < sample_count; i++)
 		sum += rg_random_normal_f32_cached(&rng, &cache, 3.0f, 2.0f);
-	CHECK_CLOSE(sum / (double)sample_count, 3.0, 0.04);
+	CHECK_CLOSE(sum / (f64)sample_count, 3.0, 0.04);
 
 	rg_rng_seed(&rng, 5678);
 	sum = 0.0;
 	for (size_t i = 0; i < sample_count; i++)
 	{
-		float value = rg_random_exponential_f32(&rng, 2.0f);
+		f32 value = rg_random_exponential_f32(&rng, 2.0f);
 		CHECK(value >= 0.0f && isfinite(value));
 		sum += value;
 	}
-	CHECK_CLOSE(sum / (double)sample_count, 0.5, 0.02);
+	CHECK_CLOSE(sum / (f64)sample_count, 0.5, 0.02);
 
 	rg_rng_seed(&rng, 11);
 	(void)rg_random_normal_f32(&rng, 0.0f, 1.0f);
 	CHECK(rng.has_spare == 1);
-	float out0 = 0.0f;
-	float out1 = 0.0f;
+	f32 out0 = 0.0f;
+	f32 out1 = 0.0f;
 	rg_random_normal2_f32(&rng, 2.0f, 0.5f, &out0, &out1);
 	CHECK(rng.has_spare == 0);
 	CHECK(isfinite(out0) && isfinite(out1));

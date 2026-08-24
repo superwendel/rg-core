@@ -17,8 +17,8 @@ Create and seed an explicit RNG state:
 RgRng rng;
 rg_rng_seed(&rng, 1234);
 
-uint32_t value = rg_random_u32(&rng);
-float unit = rg_random_f32(&rng);
+u32 value = rg_random_u32(&rng);
+f32 unit = rg_random_f32(&rng);
 ```
 
 The header contains normal include guards and all functions are `static inline`,
@@ -29,9 +29,9 @@ so it can be included repeatedly and works naturally in unity builds.
 ```c
 typedef struct RgRng
 {
-    uint64_t state[4];
-    uint32_t has_spare;
-    float spare;
+    u64 state[4];
+    u32 has_spare;
+    f32 spare;
 } RgRng;
 ```
 
@@ -41,22 +41,22 @@ changed to `{1, 0, 0, 0}` because xoshiro256** cannot advance from all zeroes.
 Both seeding operations reset the built-in normal-distribution cache.
 
 ```c
-void rg_rng_seed(RgRng* rng, uint64_t seed);
-void rg_rng_seed_state(RgRng* rng, const uint64_t seed_state[4]);
-uint64_t rg_rng_next_u64(RgRng* rng);
-uint32_t rg_rng_next_u32(RgRng* rng);
+void rg_rng_seed(RgRng* rng, u64 seed);
+void rg_rng_seed_state(RgRng* rng, const u64 seed_state[4]);
+u64 rg_rng_next_u64(RgRng* rng);
+u32 rg_rng_next_u32(RgRng* rng);
 ```
 
 ## Uniform sampling
 
 ```c
-uint32_t rg_random_u32(RgRng* rng);
-uint64_t rg_random_u64(RgRng* rng);
-float rg_random_f32(RgRng* rng);     // [0, 1)
-double rg_random_f64(RgRng* rng);    // [0, 1)
+u32 rg_random_u32(RgRng* rng);
+u64 rg_random_u64(RgRng* rng);
+f32 rg_random_f32(RgRng* rng);     // [0, 1)
+f64 rg_random_f64(RgRng* rng);     // [0, 1)
 
-uint32_t rg_random_bounded_u32(RgRng* rng, uint32_t bound);
-uint64_t rg_random_bounded_u64(RgRng* rng, uint64_t bound);
+u32 rg_random_bounded_u32(RgRng* rng, u32 bound);
+u64 rg_random_bounded_u64(RgRng* rng, u64 bound);
 ```
 
 The bounded functions sample without modulo bias and return values in
@@ -65,17 +65,17 @@ The bounded functions sample without modulo bias and return values in
 Integer ranges are inclusive at both ends:
 
 ```c
-uint32_t rg_random_range_u32(RgRng* rng, uint32_t min, uint32_t max);
-uint64_t rg_random_range_u64(RgRng* rng, uint64_t min, uint64_t max);
-int32_t rg_random_range_i32(RgRng* rng, int32_t min, int32_t max);
-int64_t rg_random_range_i64(RgRng* rng, int64_t min, int64_t max);
+u32 rg_random_range_u32(RgRng* rng, u32 min, u32 max);
+u64 rg_random_range_u64(RgRng* rng, u64 min, u64 max);
+i32 rg_random_range_i32(RgRng* rng, i32 min, i32 max);
+i64 rg_random_range_i64(RgRng* rng, i64 min, i64 max);
 ```
 
 Floating-point ranges use the conventional half-open target interval:
 
 ```c
-float rg_random_range_f32(RgRng* rng, float min, float max);
-double rg_random_range_f64(RgRng* rng, double min, double max);
+f32 rg_random_range_f32(RgRng* rng, f32 min, f32 max);
+f64 rg_random_range_f64(RgRng* rng, f64 min, f64 max);
 ```
 
 The source uniform value is below one. As with the usual multiply-and-add range
@@ -95,20 +95,20 @@ void rg_random_fill_bytes(void* data, size_t size, RgRng* rng);
 ## Distributions
 
 ```c
-void rg_random_normal2_f32(RgRng* rng, float mean, float stddev,
-                           float* out0, float* out1);
-float rg_random_normal_f32(RgRng* rng, float mean, float stddev);
+void rg_random_normal2_f32(RgRng* rng, f32 mean, f32 stddev,
+                           f32* out0, f32* out1);
+f32 rg_random_normal_f32(RgRng* rng, f32 mean, f32 stddev);
 
 typedef struct RgNormalCache
 {
-    uint32_t has_spare;
-    float spare;
+    u32 has_spare;
+    f32 spare;
 } RgNormalCache;
 
 void rg_random_normal_cache_reset(RgNormalCache* cache);
-float rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache,
-                                  float mean, float stddev);
-float rg_random_exponential_f32(RgRng* rng, float lambda);
+f32 rg_random_normal_f32_cached(RgRng* rng, RgNormalCache* cache,
+                                f32 mean, f32 stddev);
+f32 rg_random_exponential_f32(RgRng* rng, f32 lambda);
 ```
 
 `rg_random_normal_f32` stores the second Box-Muller sample in `RgRng`.
@@ -123,7 +123,8 @@ The implementation uses equivalent native and portable 64-by-64-bit
 multiplication paths so bounded 64-bit sampling does not change algorithms on
 platforms without a native 128-bit integer.
 
-The float uniform helpers assume ordinary IEEE-754 binary floating point.
+The `f32` and `f64` uniform helpers assume ordinary IEEE-754 binary floating
+point.
 Normal and exponential sampling call the platform math library, so their final
 floating-point bits are not guaranteed to match across different math-library
 implementations.
