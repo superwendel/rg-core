@@ -10,6 +10,7 @@ if /I "%TARGET%"=="test_sprintf" goto test_sprintf
 if /I "%TARGET%"=="test_log" goto test_log
 if /I "%TARGET%"=="test_assert" goto test_assert
 if /I "%TARGET%"=="test_mem" goto test_mem
+if /I "%TARGET%"=="test_bin" goto test_bin
 if /I "%TARGET%"=="test_hash" goto test_hash
 if /I "%TARGET%"=="test_random" goto test_random
 if /I "%TARGET%"=="test_algo" goto test_algo
@@ -47,6 +48,8 @@ if errorlevel 1 exit /b 1
 call "%~f0" test_assert
 if errorlevel 1 exit /b 1
 call "%~f0" test_mem
+if errorlevel 1 exit /b 1
+call "%~f0" test_bin
 if errorlevel 1 exit /b 1
 call "%~f0" test_string
 if errorlevel 1 exit /b 1
@@ -193,6 +196,39 @@ test_mem_cpp.exe
 if errorlevel 1 exit /b 1
 
 echo All rg_mem tests passed.
+exit /b 0
+
+:test_bin
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building rg_bin tests...
+cl %COMMON_FLAGS% /std:c11 /Fo:test_bin.obj tests\test_bin.c /Fe:test_bin.exe
+if errorlevel 1 exit /b 1
+test_bin.exe
+if errorlevel 1 exit /b 1
+
+echo Building fast-unaligned rg_bin tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_BIN_FAST_UNALIGNED=1 /Fo:test_bin_unaligned.obj tests\test_bin.c /Fe:test_bin_unaligned.exe
+if errorlevel 1 exit /b 1
+test_bin_unaligned.exe
+if errorlevel 1 exit /b 1
+
+echo Building bytewise rg_bin tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_BIN_LITTLE_ENDIAN=0 /Fo:test_bin_bytewise.obj tests\test_bin.c /Fe:test_bin_bytewise.exe
+if errorlevel 1 exit /b 1
+test_bin_bytewise.exe
+if errorlevel 1 exit /b 1
+
+echo Building C++ rg_bin compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 /DNDEBUG /Fo:test_bin_cpp.obj tests\test_bin.c /Fe:test_bin_cpp.exe
+if errorlevel 1 exit /b 1
+test_bin_cpp.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_bin tests passed.
 exit /b 0
 
 :test_hash
@@ -360,12 +396,14 @@ del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
 del /q test_sprintf_secure.exe test_sprintf_asm_secure.exe 2>nul
 del /q test_log.exe test_log_fallback.exe test_assert.exe test_assert_disabled.exe 2>nul
 del /q test_mem.exe test_mem_eager.exe test_mem_secure.exe test_mem_cpp.exe 2>nul
+del /q test_bin.exe test_bin_unaligned.exe test_bin_bytewise.exe test_bin_cpp.exe 2>nul
 del /q test_hash.exe test_hash_eager.exe test_hash_cpp.exe 2>nul
 del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
 del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
 del /q test_string.exe test_string_secure.exe test_string_cpp.exe 2>nul
 del /q test_math.exe test_math_avx2.exe test_math_scalar.exe test_math_checked.exe test_math_plain.exe test_math_lean.exe test_math_cpp.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
+del /q test_bin.obj test_bin_unaligned.obj test_bin_bytewise.obj test_bin_cpp.obj 2>nul
 del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
 del /q test_string.obj test_string_secure.obj test_string_cpp.obj 2>nul
 del /q test_math.obj test_math_avx2.obj test_math_scalar.obj test_math_checked.obj test_math_plain.obj test_math_lean.obj test_math_cpp.obj 2>nul

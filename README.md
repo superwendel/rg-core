@@ -4,6 +4,8 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_bin.h` — endian-aware integer and floating-point loads and stores,
+  pointer and bounded cursors, and ULEB128/zigzag variable-length integers.
 - `rg_math.h` — SIMD-accelerated scalar, vector, matrix, quaternion, camera,
   curve, geometry, and noise helpers with portable scalar fallbacks.
 - `rg_string.h` — in-place string utilities, bounded replacement and joining,
@@ -64,10 +66,10 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, string, hash, random, algorithm, and math suites. Math is
-checked with baseline SIMD, AVX2, checked SIMD and scalar, plain-layout,
-reduced-module, and C++17 builds. On Windows x64, the formatter tests assemble
-and link the included MASM helper automatically.
+assertion, memory, binary I/O, string, hash, random, algorithm, and math suites.
+Math is checked with baseline SIMD, AVX2, checked SIMD and scalar,
+plain-layout, reduced-module, and C++17 builds. On Windows x64, the formatter
+tests assemble and link the included MASM helper automatically.
 
 ## Usage
 
