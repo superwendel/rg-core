@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1080" viewBox="0 0 1200 1080" role="img" aria-labelledby="title description">
+	<title id="title">rg_math hot-path benchmark results</title>
+	<desc id="description">The first panel compares median milliseconds for one million calls to nine vector, matrix, and quaternion operations in rg_math and cglm. The second panel compares a weighted shared hot-path score for rg_math, DirectXMath, cglm, and GLM. Lower values are better in both panels.</desc>
+	<style>
+		text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #24292f; }
+		.title { font-size: 26px; font-weight: 650; }
+		.panel-title { font-size: 20px; font-weight: 650; }
+		.subtitle { font-size: 14px; fill: #57606a; }
+		.label { font-size: 14px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+		.value { font-size: 12px; font-weight: 600; }
+		.tick { font-size: 12px; fill: #57606a; }
+		.legend { font-size: 13px; }
+		.grid { stroke: #d8dee4; stroke-width: 1; }
+		.axis { stroke: #8c959f; stroke-width: 1; }
+	</style>
+	<rect width="1200" height="1080" fill="#ffffff"/>
+	<text class="title" x="60" y="42">rg_math hot-path performance</text>
+	<text class="subtitle" x="60" y="68">Windows x64 · AVX2 · median of 7 fresh-process runs · 1,000,000 calls · lower is better</text>
+
+	<text class="panel-title" x="60" y="105">Representative operations</text>
+	<g class="legend">
+		<rect x="670" y="89" width="14" height="14" rx="2" fill="#4169a1"/>
+		<text x="692" y="101">rg_math</text>
+		<rect x="780" y="89" width="14" height="14" rx="2" fill="#d65f5f"/>
+		<text x="802" y="101">cglm 0.9.6</text>
+	</g>
+
+	<g>
+		<line class="grid" x1="260" y1="115" x2="260" y2="625"/>
+		<line class="grid" x1="410" y1="115" x2="410" y2="625"/>
+		<line class="grid" x1="560" y1="115" x2="560" y2="625"/>
+		<line class="grid" x1="710" y1="115" x2="710" y2="625"/>
+		<line class="grid" x1="860" y1="115" x2="860" y2="625"/>
+		<line class="axis" x1="260" y1="625" x2="860" y2="625"/>
+		<text class="tick" x="260" y="647" text-anchor="middle">0</text>
+		<text class="tick" x="410" y="647" text-anchor="middle">1</text>
+		<text class="tick" x="560" y="647" text-anchor="middle">2</text>
+		<text class="tick" x="710" y="647" text-anchor="middle">3</text>
+		<text class="tick" x="860" y="647" text-anchor="middle">4 ms</text>
+
+		<text class="label" x="240" y="146" text-anchor="end">vec3_add</text>
+		<rect x="260" y="128" width="58.5" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="326.5" y="140">0.39</text>
+		<rect x="260" y="146" width="58.5" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="326.5" y="158">0.39</text>
+
+		<text class="label" x="240" y="203" text-anchor="end">vec3_dot</text>
+		<rect x="260" y="185" width="138" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="406" y="197">0.92</text>
+		<rect x="260" y="203" width="186" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="454" y="215">1.24</text>
+
+		<text class="label" x="240" y="260" text-anchor="end">vec3_length</text>
+		<rect x="260" y="242" width="190.5" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="458.5" y="254">1.27</text>
+		<rect x="260" y="260" width="195" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="463" y="272">1.30</text>
+
+		<text class="label" x="240" y="317" text-anchor="end">vec3_normalize</text>
+		<rect x="260" y="299" width="307.5" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="575.5" y="311">2.05</text>
+		<rect x="260" y="317" width="379.5" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="647.5" y="329">2.53</text>
+
+		<text class="label" x="240" y="374" text-anchor="end">vec4_add</text>
+		<rect x="260" y="356" width="151.5" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="419.5" y="368">1.01</text>
+		<rect x="260" y="374" width="150" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="418" y="386">1.00</text>
+
+		<text class="label" x="240" y="431" text-anchor="end">mat4_mul</text>
+		<rect x="260" y="413" width="57" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="325" y="425">0.38</text>
+		<rect x="260" y="431" width="384" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="652" y="443">2.56</text>
+
+		<text class="label" x="240" y="488" text-anchor="end">mat4_mulv4</text>
+		<rect x="260" y="470" width="330" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="598" y="482">2.20</text>
+		<rect x="260" y="488" width="331.5" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="599.5" y="500">2.21</text>
+
+		<text class="label" x="240" y="545" text-anchor="end">quat_mul</text>
+		<rect x="260" y="527" width="60" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="328" y="539">0.40</text>
+		<rect x="260" y="545" width="60" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="328" y="557">0.40</text>
+
+		<text class="label" x="240" y="602" text-anchor="end">quat_normalize</text>
+		<rect x="260" y="584" width="385.5" height="14" rx="2" fill="#4169a1"/>
+		<text class="value" x="653.5" y="596">2.57</text>
+		<rect x="260" y="602" width="526.5" height="14" rx="2" fill="#d65f5f"/>
+		<text class="value" x="794.5" y="614">3.51</text>
+	</g>
+
+	<text class="panel-title" x="60" y="710">Shared 3D-engine hot-path score</text>
+	<text class="subtitle" x="60" y="735">Weighted median across the 90-point vector, matrix, and quaternion profile · only 100%-coverage libraries shown</text>
+	<g>
+		<line class="grid" x1="260" y1="750" x2="260" y2="925"/>
+		<line class="grid" x1="410" y1="750" x2="410" y2="925"/>
+		<line class="grid" x1="560" y1="750" x2="560" y2="925"/>
+		<line class="grid" x1="710" y1="750" x2="710" y2="925"/>
+		<line class="grid" x1="860" y1="750" x2="860" y2="925"/>
+		<line class="axis" x1="260" y1="925" x2="860" y2="925"/>
+		<text class="tick" x="260" y="947" text-anchor="middle">0</text>
+		<text class="tick" x="410" y="947" text-anchor="middle">1</text>
+		<text class="tick" x="560" y="947" text-anchor="middle">2</text>
+		<text class="tick" x="710" y="947" text-anchor="middle">3</text>
+		<text class="tick" x="860" y="947" text-anchor="middle">4 ms</text>
+
+		<text class="label" x="240" y="777" text-anchor="end">rg_math</text>
+		<rect x="260" y="758" width="171" height="22" rx="2" fill="#4169a1"/>
+		<text class="value" x="439" y="774">1.14 ms</text>
+
+		<text class="label" x="240" y="822" text-anchor="end">DirectXMath 3.19</text>
+		<rect x="260" y="803" width="222" height="22" rx="2" fill="#2a9d8f"/>
+		<text class="value" x="490" y="819">1.48 ms</text>
+
+		<text class="label" x="240" y="867" text-anchor="end">cglm 0.9.6</text>
+		<rect x="260" y="848" width="225" height="22" rx="2" fill="#d65f5f"/>
+		<text class="value" x="493" y="864">1.50 ms</text>
+
+		<text class="label" x="240" y="912" text-anchor="end">GLM 1.1.0</text>
+		<rect x="260" y="893" width="547.5" height="22" rx="2" fill="#9467bd"/>
+		<text class="value" x="815.5" y="909">3.65 ms</text>
+	</g>
+
+	<text class="subtitle" x="60" y="990">AMD Ryzen 9 4900HS · MSVC 19.44.35217 · Windows build 26200.9168 · measured August 26, 2026</text>
+	<text class="subtitle" x="60" y="1016">RG_MATH_MAX_PERF=1 · /O2 /Ob3 /Oi /Ot /Oy /GL /LTCG /arch:AVX2 /fp:fast /GS- /DNDEBUG</text>
+	<text class="subtitle" x="60" y="1042">Results are machine-specific and are not a performance guarantee. See docs/rg_math.md for methodology and workload weights.</text>
+</svg>

@@ -14,6 +14,7 @@ if /I "%TARGET%"=="test_hash" goto test_hash
 if /I "%TARGET%"=="test_random" goto test_random
 if /I "%TARGET%"=="test_algo" goto test_algo
 if /I "%TARGET%"=="test_string" goto test_string
+if /I "%TARGET%"=="test_math" goto test_math
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -54,6 +55,8 @@ if errorlevel 1 exit /b 1
 call "%~f0" test_random
 if errorlevel 1 exit /b 1
 call "%~f0" test_algo
+if errorlevel 1 exit /b 1
+call "%~f0" test_math
 if errorlevel 1 exit /b 1
 echo All tests passed.
 exit /b 0
@@ -300,6 +303,57 @@ if errorlevel 1 exit /b 1
 echo All rg_string tests passed.
 exit /b 0
 
+:test_math
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building baseline SIMD rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /Fo:test_math.obj tests\test_math.c /Fe:test_math.exe
+if errorlevel 1 exit /b 1
+test_math.exe
+if errorlevel 1 exit /b 1
+
+echo Building AVX2 rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /arch:AVX2 /Fo:test_math_avx2.obj tests\test_math.c /Fe:test_math_avx2.exe
+if errorlevel 1 exit /b 1
+test_math_avx2.exe
+if errorlevel 1 exit /b 1
+
+echo Building checked scalar rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_MATH_NO_SIMD /DRG_MATH_MAX_PERF=0 /Fo:test_math_scalar.obj tests\test_math.c /Fe:test_math_scalar.exe
+if errorlevel 1 exit /b 1
+test_math_scalar.exe
+if errorlevel 1 exit /b 1
+
+echo Building checked SIMD rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_MATH_MAX_PERF=0 /Fo:test_math_checked.obj tests\test_math.c /Fe:test_math_checked.exe
+if errorlevel 1 exit /b 1
+test_math_checked.exe
+if errorlevel 1 exit /b 1
+
+echo Building plain-layout AVX2 rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /arch:AVX2 /DRG_MATH_VEC3_PLAIN /DRG_MATH_VEC4_PLAIN /Fo:test_math_plain.obj tests\test_math.c /Fe:test_math_plain.exe
+if errorlevel 1 exit /b 1
+test_math_plain.exe
+if errorlevel 1 exit /b 1
+
+echo Building reduced-module rg_math tests...
+cl %COMMON_FLAGS% /std:c11 /DRG_MATH_NO_SIMD /Fo:test_math_lean.obj tests\test_math_lean.c /Fe:test_math_lean.exe
+if errorlevel 1 exit /b 1
+test_math_lean.exe
+if errorlevel 1 exit /b 1
+
+echo Building C++ rg_math compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 /DNDEBUG /Fo:test_math_cpp.obj tests\test_math.c /Fe:test_math_cpp.exe
+if errorlevel 1 exit /b 1
+test_math_cpp.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_math tests passed.
+exit /b 0
+
 :clean
 del /q test_sprintf.exe test_sprintf_scalar.exe test_sprintf_asm.exe 2>nul
 del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
@@ -310,8 +364,10 @@ del /q test_hash.exe test_hash_eager.exe test_hash_cpp.exe 2>nul
 del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
 del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
 del /q test_string.exe test_string_secure.exe test_string_cpp.exe 2>nul
+del /q test_math.exe test_math_avx2.exe test_math_scalar.exe test_math_checked.exe test_math_plain.exe test_math_lean.exe test_math_cpp.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
 del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
 del /q test_string.obj test_string_secure.obj test_string_cpp.obj 2>nul
+del /q test_math.obj test_math_avx2.obj test_math_scalar.obj test_math_checked.obj test_math_plain.obj test_math_lean.obj test_math_cpp.obj 2>nul
 del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0

@@ -4,6 +4,8 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_math.h` — SIMD-accelerated scalar, vector, matrix, quaternion, camera,
+  curve, geometry, and noise helpers with portable scalar fallbacks.
 - `rg_string.h` — in-place string utilities, bounded replacement and joining,
   UTF-8 helpers, and arena-backed length-aware strings.
 - `rg_algo.h` — macro-generated typed sorting, selection, searching, min/max,
@@ -33,12 +35,24 @@ fallback and optional x64 assembly acceleration.
 
 ## Performance
 
+### rg_sprintf
+
 ![rg_sprintf benchmark results](docs/benchmarks/rg_sprintf-vs-stb.svg)
 
 These measurements compare `stb_sprintf` 1.10 with the portable C and x64
 assembly implementations of `rg_sprintf`. See the
 [benchmark methodology](docs/rg_sprintf.md#performance) for the test cases,
 build configuration, and hardware details. Results are machine-specific.
+
+### rg_math
+
+![rg_math hot-path benchmark results](docs/benchmarks/rg_math-hot-path.svg)
+
+The math figure compares representative operations with cglm and summarizes a
+shared 3D-engine hot-path profile across fully covered libraries. See the
+[benchmark methodology](docs/rg_math.md#performance) for workload weights,
+build configuration, hardware details, and the complete plotted values.
+Results are machine-specific.
 
 ## Build and test
 
@@ -50,8 +64,10 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, string, hash, random, and algorithm suites. On Windows x64,
-it assembles and links the included MASM helper automatically.
+assertion, memory, string, hash, random, algorithm, and math suites. Math is
+checked with baseline SIMD, AVX2, checked SIMD and scalar, plain-layout,
+reduced-module, and C++17 builds. On Windows x64, the formatter tests assemble
+and link the included MASM helper automatically.
 
 ## Usage
 
