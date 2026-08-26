@@ -125,7 +125,7 @@
 		<text class="value" x="815.5" y="909">3.65 ms</text>
 	</g>
 
-	<text class="subtitle" x="60" y="990">AMD Ryzen 9 4900HS · MSVC 19.44.35217 · Windows build 26200.9168 · measured August 26, 2026</text>
+	<text class="subtitle" x="60" y="990">AMD Ryzen 9 4900HS · MSVC 19.44.35217 · Windows build 26200.9168</text>
 	<text class="subtitle" x="60" y="1016">RG_MATH_MAX_PERF=1 · /O2 /Ob3 /Oi /Ot /Oy /GL /LTCG /arch:AVX2 /fp:fast /GS- /DNDEBUG</text>
 	<text class="subtitle" x="60" y="1042">Results are machine-specific and are not a performance guarantee. See docs/rg_math.md for methodology and workload weights.</text>
 </svg>

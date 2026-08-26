@@ -55,10 +55,9 @@ configuration was used. Each benchmark group ran in a fresh process; the
 figure reports the median of seven runs after a 10,000-call warmup per
 operation.
 
-Measurements were taken on an AMD Ryzen 9 4900HS on Windows build 26200.9168
-on August 26, 2026. HandmadeMath is not shown because the development harness
-intentionally configures it without SIMD; Blaze is not shown because it covers
-only 79% of the shared profile. The development harness and comparison-library
+Measurements were taken on an AMD Ryzen 9 4900HS on Windows build 26200.9168.
+HandmadeMath is not shown because the development harness intentionally
+configures it without SIMD. The development harness and comparison-library
 sources are not distributed in this repository. Results are machine-specific
 and should not be treated as a performance guarantee.
 
