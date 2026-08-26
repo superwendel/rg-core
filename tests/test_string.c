@@ -32,6 +32,8 @@ static void test_trim_and_case(void)
 	char lower[] = "AbC-123";
 	char upper[] = "aBc-123";
 	char high[] = "\xc0" "A";
+	char lower_n[] = "A\0Z\xc0";
+	static const char lower_n_expected[] = "a\0z\xc0";
 	char reverse[] = "abcdef";
 
 	CHECK(strcmp(rg_trim(both), "hello") == 0);
@@ -42,6 +44,8 @@ static void test_trim_and_case(void)
 	CHECK(strcmp(rg_strlower(lower), "abc-123") == 0);
 	CHECK(strcmp(rg_strupper(upper), "ABC-123") == 0);
 	CHECK((u8)rg_strlower(high)[0] == UINT8_C(0xc0) && high[1] == 'a');
+	CHECK(rg_strlower_n(lower_n, sizeof(lower_n)) == lower_n);
+	CHECK(memcmp(lower_n, lower_n_expected, sizeof(lower_n)) == 0);
 	CHECK(strcmp(rg_strrev(reverse), "fedcba") == 0);
 	CHECK(strcmp(rg_strrev(empty), "") == 0);
 }
@@ -133,6 +137,7 @@ static void test_utf8(void)
 	char invalid_encoding[4] = {0};
 
 	CHECK(rg_utf8_len(valid) == RG_ARRAY_COUNT(expected));
+	CHECK(rg_utf8_len_n(valid, sizeof(valid) - 1u) == RG_ARRAY_COUNT(expected));
 	CHECK(rg_utf8_valid(valid));
 	const char* cursor = valid;
 	for (size_t i = 0; i < RG_ARRAY_COUNT(expected); i++)
@@ -155,6 +160,52 @@ static void test_utf8(void)
 	CHECK(!rg_utf8_valid(continuation));
 	CHECK(rg_utf8_encode(invalid_encoding, UINT32_C(0xd800)) == 0);
 	CHECK(rg_utf8_encode(invalid_encoding, UINT32_C(0x110000)) == 0);
+}
+
+static size_t reference_utf8_len_n(const char* str, size_t len)
+{
+	size_t count = len;
+	for (size_t i = 0; i < len; i++)
+	{
+		if (((u8)str[i] & 0xc0u) == 0x80u) count--;
+	}
+	return count;
+}
+
+static void reference_strlower_n(char* str, size_t len)
+{
+	for (size_t i = 0; i < len; i++)
+	{
+		u8 c = (u8)str[i];
+		if (c >= (u8)'A' && c <= (u8)'Z') str[i] = (char)(c + 0x20u);
+	}
+}
+
+static void test_bounded_operations(void)
+{
+	char source[1056];
+	char expected[1056];
+	char actual[1056];
+
+	for (size_t len = 0; len <= 1024u; len++)
+	{
+		size_t offset = len % 31u;
+		char* source_data = source + offset;
+		char* expected_data = expected + offset;
+		char* actual_data = actual + offset;
+		for (size_t i = 0; i < len; i++)
+		{
+			source_data[i] = (char)(u8)(i * 131u + len * 17u);
+		}
+
+		CHECK(rg_utf8_len_n(source_data, len) ==
+		      reference_utf8_len_n(source_data, len));
+		memcpy(expected_data, source_data, len);
+		memcpy(actual_data, source_data, len);
+		reference_strlower_n(expected_data, len);
+		CHECK(rg_strlower_n(actual_data, len) == actual_data);
+		CHECK(memcmp(actual_data, expected_data, len) == 0);
+	}
 }
 
 static void test_rgstring(RgArena* arena)
@@ -223,6 +274,7 @@ static void test_secure_arguments(void)
 {
 	CHECK(rg_trim(NULL) == NULL);
 	CHECK(rg_strlower(NULL) == NULL);
+	CHECK(rg_strlower_n(NULL, 64) == NULL);
 	CHECK(!rg_startswith(NULL, "x"));
 	CHECK(!rg_endswith("x", NULL));
 	CHECK(rg_strcount(NULL, "x") == 0);
@@ -231,6 +283,7 @@ static void test_secure_arguments(void)
 	CHECK(rg_split(NULL, ',', NULL, 0) == 0);
 	CHECK(rg_join(NULL, 1, NULL, 0, NULL) == 0);
 	CHECK(rg_utf8_len(NULL) == 0);
+	CHECK(rg_utf8_len_n(NULL, 64) == 0);
 	CHECK(rg_utf8_decode(NULL, NULL) == 0);
 	CHECK(rg_utf8_encode(NULL, 0) == 0);
 	CHECK(!rg_utf8_valid(NULL));
@@ -267,6 +320,7 @@ int main(void)
 	test_replace();
 	test_split_and_join();
 	test_utf8();
+	test_bounded_operations();
 	test_rgstring(&arena);
 #ifdef RG_STRING_SECURE
 	test_secure_arguments();

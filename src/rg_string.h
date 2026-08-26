@@ -19,6 +19,7 @@
 //
 // OPTIONS:
 //   #define RG_STRING_SECURE       - Return safely for null arguments
+//   #define RG_STRING_NO_SIMD      - Disable optional AVX2 bounded operations
 //   #define RG_STRING_ASSERT(x)    - Custom assertion macro (default: assert)
 //
 // NOTES:
@@ -37,6 +38,17 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
+#undef RG_STRING_USE_AVX2
+#if !defined(RG_STRING_NO_SIMD) && (defined(__AVX2__) || defined(_M_AVX2))
+#define RG_STRING_USE_AVX2 1
+#include <immintrin.h>
+#if RG_COMPILER_MSVC
+#include <intrin.h>
+#endif
+#else
+#define RG_STRING_USE_AVX2 0
+#endif
 
 // =============================================================================
 // PUBLIC API - Extended Functions
@@ -70,6 +82,16 @@ RGINLINE char* rg_rtrim(char* str);
  * @note ASCII only (A-Z to a-z). Non-ASCII bytes pass through unchanged.
  */
 RGINLINE char* rg_strlower(char* str);
+
+/**
+ * @brief Convert a byte range to lowercase (in-place)
+ * @param str Bytes to convert
+ * @param len Number of bytes to process
+ * @return Pointer to the byte range
+ * @note ASCII only (A-Z to a-z). Processes embedded null bytes and does not
+ *       append a null terminator.
+ */
+RGINLINE char* rg_strlower_n(char* str, size_t len);
 
 /**
  * @brief Convert string to uppercase (in-place)
@@ -181,6 +203,16 @@ RGINLINE size_t rg_join(char* dst, size_t dst_size, const char** parts,
  *          incorrect. Use rg_utf8_valid() first if validation is needed.
  */
 RGINLINE size_t rg_utf8_len(const char* str);
+
+/**
+ * @brief Count UTF-8 codepoints in a byte range
+ * @param str UTF-8 encoded bytes
+ * @param len Number of bytes to process
+ * @return Number of codepoints (not bytes)
+ * @note Processes exactly len bytes, including embedded null bytes. Does not
+ *       validate UTF-8.
+ */
+RGINLINE size_t rg_utf8_len_n(const char* str, size_t len);
 
 /**
  * @brief Decode one UTF-8 codepoint from string
@@ -418,6 +450,38 @@ RGINLINE char* rg_strlower(char* str)
 	{
 		*s = rg_tolower_table[*s];
 		s++;
+	}
+	return str;
+}
+
+RGINLINE char* rg_strlower_n(char* str, size_t len)
+{
+#ifdef RG_STRING_SECURE
+	if (!str) return NULL;
+#endif
+	size_t i = 0;
+#if RG_STRING_USE_AVX2
+	if (len >= 32u)
+	{
+		const __m256i before_a = _mm256_set1_epi8('A' - 1);
+		const __m256i after_z = _mm256_set1_epi8('Z' + 1);
+		const __m256i delta = _mm256_set1_epi8(0x20);
+		size_t vector_end = len & ~(size_t)31u;
+
+		for (; i < vector_end; i += 32u)
+		{
+			__m256i bytes = _mm256_loadu_si256((const __m256i*)(str + i));
+			__m256i above_a = _mm256_cmpgt_epi8(bytes, before_a);
+			__m256i below_z = _mm256_cmpgt_epi8(after_z, bytes);
+			__m256i uppercase = _mm256_and_si256(above_a, below_z);
+			bytes = _mm256_add_epi8(bytes, _mm256_and_si256(uppercase, delta));
+			_mm256_storeu_si256((__m256i*)(str + i), bytes);
+		}
+	}
+#endif
+	for (; i < len; i++)
+	{
+		str[i] = (char)rg_tolower_table[(u8)str[i]];
 	}
 	return str;
 }
@@ -709,6 +773,57 @@ RGINLINE size_t rg_utf8_len(const char* str)
 			count++;
 		}
 		str++;
+	}
+	return count;
+}
+
+#if RG_STRING_USE_AVX2
+RGINLINE u32 rg_string_popcount32(u32 value)
+{
+#if RG_COMPILER_MSVC
+	return (u32)__popcnt(value);
+#elif defined(__POPCNT__)
+	return (u32)__builtin_popcount(value);
+#else
+	value -= (value >> 1u) & UINT32_C(0x55555555);
+	value = (value & UINT32_C(0x33333333)) +
+	        ((value >> 2u) & UINT32_C(0x33333333));
+	value = (value + (value >> 4u)) & UINT32_C(0x0f0f0f0f);
+	return (value * UINT32_C(0x01010101)) >> 24u;
+#endif
+}
+#endif
+
+RGINLINE size_t rg_utf8_len_n(const char* str, size_t len)
+{
+#ifdef RG_STRING_SECURE
+	if (!str) return 0;
+#endif
+	size_t count = len;
+	size_t i = 0;
+#if RG_STRING_USE_AVX2
+	if (len >= 32u)
+	{
+		const __m256i high_mask = _mm256_set1_epi8(-64);
+		const __m256i continuation = _mm256_set1_epi8(-128);
+		size_t vector_end = len & ~(size_t)31u;
+
+		for (; i < vector_end; i += 32u)
+		{
+			__m256i bytes = _mm256_loadu_si256((const __m256i*)(str + i));
+			__m256i high = _mm256_and_si256(bytes, high_mask);
+			__m256i matches = _mm256_cmpeq_epi8(high, continuation);
+			u32 mask = (u32)_mm256_movemask_epi8(matches);
+			count -= rg_string_popcount32(mask);
+		}
+	}
+#endif
+	for (; i < len; i++)
+	{
+		if (((u8)str[i] & 0xc0u) == 0x80u)
+		{
+			count--;
+		}
 	}
 	return count;
 }
@@ -1046,5 +1161,7 @@ RGINLINE void rgs_clear(RgString* s)
 		s->data[0] = '\0';
 	}
 }
+
+#undef RG_STRING_USE_AVX2
 
 #endif // RG_STRING_H

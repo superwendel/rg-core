@@ -67,6 +67,8 @@ build.bat test
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
 assertion, memory, binary I/O, string, hash, random, algorithm, and math suites.
+String is checked with baseline scalar, AVX2, forced-scalar, secure, and C++17
+builds.
 Math is checked with baseline SIMD, AVX2, checked SIMD and scalar,
 plain-layout, reduced-module, and C++17 builds. On Windows x64, the formatter
 tests assemble and link the included MASM helper automatically.

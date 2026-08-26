@@ -37,7 +37,7 @@ The arena must outlive every `RgString` backed by it.
 | Operation | Function |
 | --- | --- |
 | Trim ASCII whitespace | `rg_trim`, `rg_ltrim`, `rg_rtrim` |
-| Convert ASCII case | `rg_strlower`, `rg_strupper` |
+| Convert ASCII case | `rg_strlower`, `rg_strlower_n`, `rg_strupper` |
 | Reverse bytes | `rg_strrev` |
 | Test prefix or suffix | `rg_startswith`, `rg_endswith` |
 | Count non-overlapping matches | `rg_strcount` |
@@ -48,6 +48,12 @@ Trim, case conversion, reversal, and splitting modify their input buffers.
 Whitespace follows the ASCII set: space, tab, newline, carriage return,
 vertical tab, and form feed. Case conversion changes only `A-Z` or `a-z`;
 bytes from 128 through 255 pass through unchanged.
+
+`rg_strlower_n` processes exactly the supplied number of bytes, so it avoids a
+terminator scan and continues through embedded null bytes. It does not append a
+terminator. When AVX2 is enabled for the compilation target, ranges of 32 bytes
+or more use the vector path; shorter ranges and portable builds use the scalar
+path.
 
 `rg_split` replaces every delimiter with a null terminator and stores pointers
 to non-empty fields. Empty fields, including leading and trailing fields, are
@@ -75,6 +81,8 @@ pointer as an empty string.
 ## UTF-8 helpers
 
 - `rg_utf8_len` counts code-point lead bytes. It does not validate the input.
+- `rg_utf8_len_n` performs the same count over an explicit byte length. It
+  processes embedded null bytes and does not validate the input.
 - `rg_utf8_decode` validates and decodes one code point, returning the number
   of consumed bytes or zero for an invalid sequence or the null terminator.
 - `rg_utf8_encode` writes one code point to a caller-provided four-byte buffer.
@@ -110,6 +118,13 @@ bytes. Because storage comes from a bump arena, growth allocates a new buffer
 and leaves the old one in the arena. This also makes self-copy and self-append
 safe. Reserve suitable capacity up front when repeatedly extending a string.
 
+Length-aware operations can use the stored fields directly without rescanning:
+
+```c
+rg_strlower_n(message.data, message.len);
+size_t codepoints = rg_utf8_len_n(message.data, message.len);
+```
+
 `rgs_clear` keeps capacity for reuse. `rgs_free` only releases the handle and
 does not reclaim arena storage; call `rg_arena_reset` or `rg_arena_free` when
 all strings using that arena are no longer needed. Reinitialize a handle after
@@ -131,6 +146,13 @@ Define options before including the header:
 outside the API contract except for documented length queries, null join
 separators and parts, and optional null sources accepted by `RgString`
 copy/append operations.
+
+The explicit-length lowercase and UTF-8 length functions automatically use
+AVX2 intrinsics when the compiler target defines AVX2 support, such as MSVC's
+`/arch:AVX2` or GCC and Clang's `-mavx2`. The vector loop begins at 32 bytes,
+the crossover selected by repeated scalar-versus-AVX2 benchmarks. Define
+`RG_STRING_NO_SIMD` to force the portable scalar implementation. Selection is
+compile-time; the header does not perform runtime CPU detection.
 
 ## Thread safety
 

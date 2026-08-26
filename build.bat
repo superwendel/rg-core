@@ -324,14 +324,26 @@ if errorlevel 1 exit /b 1
 test_string.exe
 if errorlevel 1 exit /b 1
 
-echo Building secure rg_string tests...
-cl %COMMON_FLAGS% /std:c11 /DRG_STRING_SECURE /Fo:test_string_secure.obj tests\test_string.c /Fe:test_string_secure.exe
+echo Building AVX2 rg_string tests...
+cl %COMMON_FLAGS% /std:c11 /arch:AVX2 /Fo:test_string_avx2.obj tests\test_string.c /Fe:test_string_avx2.exe
+if errorlevel 1 exit /b 1
+test_string_avx2.exe
+if errorlevel 1 exit /b 1
+
+echo Building forced-scalar rg_string tests...
+cl %COMMON_FLAGS% /std:c11 /arch:AVX2 /DRG_STRING_NO_SIMD /Fo:test_string_scalar.obj tests\test_string.c /Fe:test_string_scalar.exe
+if errorlevel 1 exit /b 1
+test_string_scalar.exe
+if errorlevel 1 exit /b 1
+
+echo Building secure AVX2 rg_string tests...
+cl %COMMON_FLAGS% /std:c11 /arch:AVX2 /DRG_STRING_SECURE /Fo:test_string_secure.obj tests\test_string.c /Fe:test_string_secure.exe
 if errorlevel 1 exit /b 1
 test_string_secure.exe
 if errorlevel 1 exit /b 1
 
-echo Building C++ rg_string compatibility tests...
-cl %COMMON_FLAGS% /TP /std:c++17 /Fo:test_string_cpp.obj tests\test_string.c /Fe:test_string_cpp.exe
+echo Building C++ AVX2 rg_string compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 /arch:AVX2 /Fo:test_string_cpp.obj tests\test_string.c /Fe:test_string_cpp.exe
 if errorlevel 1 exit /b 1
 test_string_cpp.exe
 if errorlevel 1 exit /b 1
@@ -400,12 +412,12 @@ del /q test_bin.exe test_bin_unaligned.exe test_bin_bytewise.exe test_bin_cpp.ex
 del /q test_hash.exe test_hash_eager.exe test_hash_cpp.exe 2>nul
 del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
 del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
-del /q test_string.exe test_string_secure.exe test_string_cpp.exe 2>nul
+del /q test_string.exe test_string_avx2.exe test_string_scalar.exe test_string_secure.exe test_string_cpp.exe 2>nul
 del /q test_math.exe test_math_avx2.exe test_math_scalar.exe test_math_checked.exe test_math_plain.exe test_math_lean.exe test_math_cpp.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
 del /q test_bin.obj test_bin_unaligned.obj test_bin_bytewise.obj test_bin_cpp.obj 2>nul
 del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
-del /q test_string.obj test_string_secure.obj test_string_cpp.obj 2>nul
+del /q test_string.obj test_string_avx2.obj test_string_scalar.obj test_string_secure.obj test_string_cpp.obj 2>nul
 del /q test_math.obj test_math_avx2.obj test_math_scalar.obj test_math_checked.obj test_math_plain.obj test_math_lean.obj test_math_cpp.obj 2>nul
 del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0
