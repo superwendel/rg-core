@@ -4,6 +4,8 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_string.h` — in-place string utilities, bounded replacement and joining,
+  UTF-8 helpers, and arena-backed length-aware strings.
 - `rg_algo.h` — macro-generated typed sorting, selection, searching, min/max,
   and stable 32/64-bit radix sorting.
 - `rg_hash.h` — deterministic 64-bit hashing and arena-backed, typed
@@ -48,8 +50,8 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, hash, random, and algorithm suites. On Windows x64, it
-assembles and links the included MASM helper automatically.
+assertion, memory, string, hash, random, and algorithm suites. On Windows x64,
+it assembles and links the included MASM helper automatically.
 
 ## Usage
 
@@ -61,5 +63,15 @@ rg_snprintf(buffer, sizeof(buffer), "entity=%u position=(%.2f, %.2f)",
             entity_id, x, y);
 ```
 
-All functions are `static`, making the headers safe to include in unity builds
-without an implementation toggle.
+All functions are `static`. The headers can be included directly in unity
+builds without an implementation toggle.
+
+## License and trademark
+
+The software and documentation are available under the [MIT License](LICENSE).
+Reverse Gravity is a registered trademark of Steven Wendel in the United
+States. The license grants rights to the software and documentation, but not
+to the Reverse Gravity name or trademark except to identify the origin of this
+software. See the
+[USPTO trademark record](https://tmsearch.uspto.gov/search/search-results/86371513)
+(Serial No. `86371513`, Registration No. `4805325`).
