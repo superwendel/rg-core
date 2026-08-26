@@ -10,6 +10,8 @@ Small, portable C libraries for game and realtime applications.
   curve, geometry, and noise helpers with portable scalar fallbacks.
 - `rg_string.h` — in-place string utilities, bounded replacement and joining,
   UTF-8 helpers, and arena-backed length-aware strings.
+- `rg_containers.h` — arena-backed typed dynamic arrays, inline small vectors,
+  power-of-two ring buffers, and sparse sets.
 - `rg_algo.h` — macro-generated typed sorting, selection, searching, min/max,
   and stable 32/64-bit radix sorting.
 - `rg_hash.h` — deterministic 64-bit hashing and arena-backed, typed
@@ -68,8 +70,8 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, timing, binary I/O, string, hash, random, algorithm, and math
-suites.
+assertion, memory, container, timing, binary I/O, string, hash, random,
+algorithm, and math suites.
 String is checked with baseline scalar, AVX2, forced-scalar, secure, and C++17
 builds.
 Math is checked with baseline SIMD, AVX2, checked SIMD and scalar,
