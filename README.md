@@ -16,6 +16,8 @@ Small, portable C libraries for game and realtime applications.
   robin-hood hash maps and sets.
 - `rg_random.h` — deterministic xoshiro256** generation with unbiased ranges,
   shuffling, byte filling, and common probability distributions.
+- `rg_time.h` — high-resolution monotonic timing, tick conversion, sleeping,
+  and yielding with native and custom platform backends.
 - `rg_mem.h` — global OS-backed memory pool with typed bump-arena allocation,
   reset, alignment, and optional secure clearing.
 - `rg_log.h` — lightweight severity-based logging with source locations,
@@ -66,7 +68,8 @@ build.bat test
 
 The test target builds portable AVX2, scalar, hybrid assembly, hybrid C
 fallback, and secure formatter configurations, then runs the logging,
-assertion, memory, binary I/O, string, hash, random, algorithm, and math suites.
+assertion, memory, timing, binary I/O, string, hash, random, algorithm, and math
+suites.
 String is checked with baseline scalar, AVX2, forced-scalar, secure, and C++17
 builds.
 Math is checked with baseline SIMD, AVX2, checked SIMD and scalar,

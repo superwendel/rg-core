@@ -10,6 +10,7 @@ if /I "%TARGET%"=="test_sprintf" goto test_sprintf
 if /I "%TARGET%"=="test_log" goto test_log
 if /I "%TARGET%"=="test_assert" goto test_assert
 if /I "%TARGET%"=="test_mem" goto test_mem
+if /I "%TARGET%"=="test_time" goto test_time
 if /I "%TARGET%"=="test_bin" goto test_bin
 if /I "%TARGET%"=="test_hash" goto test_hash
 if /I "%TARGET%"=="test_random" goto test_random
@@ -48,6 +49,8 @@ if errorlevel 1 exit /b 1
 call "%~f0" test_assert
 if errorlevel 1 exit /b 1
 call "%~f0" test_mem
+if errorlevel 1 exit /b 1
+call "%~f0" test_time
 if errorlevel 1 exit /b 1
 call "%~f0" test_bin
 if errorlevel 1 exit /b 1
@@ -196,6 +199,33 @@ test_mem_cpp.exe
 if errorlevel 1 exit /b 1
 
 echo All rg_mem tests passed.
+exit /b 0
+
+:test_time
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "COMMON_FLAGS=/nologo /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+
+echo Building rg_time tests...
+cl %COMMON_FLAGS% /std:c11 /Fo:test_time.obj tests\test_time.c /Fe:test_time.exe
+if errorlevel 1 exit /b 1
+test_time.exe
+if errorlevel 1 exit /b 1
+
+echo Building custom-backend rg_time tests...
+cl %COMMON_FLAGS% /std:c11 /Fo:test_time_custom.obj tests\test_time_custom.c /Fe:test_time_custom.exe
+if errorlevel 1 exit /b 1
+test_time_custom.exe
+if errorlevel 1 exit /b 1
+
+echo Building C++ rg_time compatibility tests...
+cl %COMMON_FLAGS% /TP /std:c++17 /Fo:test_time_cpp.obj tests\test_time.c /Fe:test_time_cpp.exe
+if errorlevel 1 exit /b 1
+test_time_cpp.exe
+if errorlevel 1 exit /b 1
+
+echo All rg_time tests passed.
 exit /b 0
 
 :test_bin
@@ -408,6 +438,7 @@ del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
 del /q test_sprintf_secure.exe test_sprintf_asm_secure.exe 2>nul
 del /q test_log.exe test_log_fallback.exe test_assert.exe test_assert_disabled.exe 2>nul
 del /q test_mem.exe test_mem_eager.exe test_mem_secure.exe test_mem_cpp.exe 2>nul
+del /q test_time.exe test_time_custom.exe test_time_cpp.exe 2>nul
 del /q test_bin.exe test_bin_unaligned.exe test_bin_bytewise.exe test_bin_cpp.exe 2>nul
 del /q test_hash.exe test_hash_eager.exe test_hash_cpp.exe 2>nul
 del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
@@ -415,6 +446,7 @@ del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
 del /q test_string.exe test_string_avx2.exe test_string_scalar.exe test_string_secure.exe test_string_cpp.exe 2>nul
 del /q test_math.exe test_math_avx2.exe test_math_scalar.exe test_math_checked.exe test_math_plain.exe test_math_lean.exe test_math_cpp.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
+del /q test_time.obj test_time_custom.obj test_time_cpp.obj 2>nul
 del /q test_bin.obj test_bin_unaligned.obj test_bin_bytewise.obj test_bin_cpp.obj 2>nul
 del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
 del /q test_string.obj test_string_avx2.obj test_string_scalar.obj test_string_secure.obj test_string_cpp.obj 2>nul
