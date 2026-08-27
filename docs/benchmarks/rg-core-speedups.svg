@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650"
+     role="img" aria-labelledby="title description">
+	<title id="title">rg-core benchmark speedup highlights</title>
+	<desc id="description">Horizontal bars show rg-core speedups from 1.3 times to 8.5 times against comparison libraries across six representative formatting, math, sorting, hash-map, and sparse-set workloads. Higher values are better.</desc>
+	<style>
+		text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #24292f; }
+		.title { font-size: 26px; font-weight: 650; }
+		.subtitle { font-size: 14px; fill: #57606a; }
+		.label { font-size: 14px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+		.comparison { font-size: 12px; fill: #57606a; }
+		.value { font-size: 13px; font-weight: 650; }
+		.tick { font-size: 12px; fill: #57606a; }
+		.grid { stroke: #d8dee4; stroke-width: 1; }
+		.axis { stroke: #8c959f; stroke-width: 1; }
+	</style>
+	<rect width="1200" height="650" fill="#ffffff"/>
+	<text class="title" x="60" y="42">rg-core performance highlights</text>
+	<text class="subtitle" x="60" y="68">Comparison elapsed time / rg-core elapsed time &#183; higher is better</text>
+
+	<g>
+		<line class="grid" x1="360" y1="100" x2="360" y2="510"/>
+		<line class="grid" x1="504" y1="100" x2="504" y2="510"/>
+		<line class="grid" x1="648" y1="100" x2="648" y2="510"/>
+		<line class="grid" x1="792" y1="100" x2="792" y2="510"/>
+		<line class="grid" x1="936" y1="100" x2="936" y2="510"/>
+		<line class="grid" x1="1080" y1="100" x2="1080" y2="510"/>
+	</g>
+
+	<g>
+		<text class="label" x="340" y="125" text-anchor="end">rg_sprintf / mixed format</text>
+		<text class="comparison" x="340" y="143" text-anchor="end">vs. stb_sprintf 1.10</text>
+		<rect x="360" y="113" width="201.6" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="571.6" y="134">2.8&#215;</text>
+
+		<text class="label" x="340" y="191" text-anchor="end">rg_math / 3D hot path</text>
+		<text class="comparison" x="340" y="209" text-anchor="end">vs. cglm 0.9.6</text>
+		<rect x="360" y="179" width="93.6" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="463.6" y="200">1.3&#215;</text>
+
+		<text class="label" x="340" y="257" text-anchor="end">rg_algo / random int32 radix sort</text>
+		<text class="comparison" x="340" y="275" text-anchor="end">vs. std::sort</text>
+		<rect x="360" y="245" width="417.6" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="787.6" y="266">5.8&#215;</text>
+
+		<text class="label" x="340" y="323" text-anchor="end">rg_hash / reserved map insert</text>
+		<text class="comparison" x="340" y="341" text-anchor="end">vs. std::unordered_map</text>
+		<rect x="360" y="311" width="223.2" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="593.2" y="332">3.1&#215;</text>
+
+		<text class="label" x="340" y="389" text-anchor="end">rg_containers / sparse-set insert</text>
+		<text class="comparison" x="340" y="407" text-anchor="end">vs. EnTT 3.13.2</text>
+		<rect x="360" y="377" width="381.6" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="751.6" y="398">5.3&#215;</text>
+
+		<text class="label" x="340" y="455" text-anchor="end">rg_containers / sparse-set remove</text>
+		<text class="comparison" x="340" y="473" text-anchor="end">vs. EnTT 3.13.2</text>
+		<rect x="360" y="443" width="612" height="32" rx="2" fill="#4169a1"/>
+		<text class="value" x="982" y="464">8.5&#215;</text>
+	</g>
+
+	<line class="axis" x1="360" y1="510" x2="1080" y2="510"/>
+	<g class="tick" text-anchor="middle">
+		<text x="360" y="532">0</text>
+		<text x="504" y="532">2&#215;</text>
+		<text x="648" y="532">4&#215;</text>
+		<text x="792" y="532">6&#215;</text>
+		<text x="936" y="532">8&#215;</text>
+		<text x="1080" y="532">10&#215;</text>
+	</g>
+
+	<text class="subtitle" x="60" y="579">AMD Ryzen 9 4900HS &#183; Windows x64 &#183; AVX2 &#183; optimized MSVC builds</text>
+	<text class="subtitle" x="60" y="603">Median of 3 fresh process runs; each process reports the median of 7 timed samples after one warmup.</text>
+	<text class="subtitle" x="60" y="627">Results are machine- and workload-specific. See the linked benchmark reports for raw timings and methodology.</text>
+</svg>

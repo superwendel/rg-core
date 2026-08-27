@@ -4,6 +4,13 @@
 functions for caller-defined C types. It depends only on
 [`rg_defs.h`](../src/rg_defs.h) and performs no allocation.
 
+## Performance
+
+On the published one-million-element random `int32` workload, the typed radix
+sort completed in 15.38 ms versus 89.63 ms for `std::sort` and 142.05 ms for
+`qsort`. See the [core benchmark report](benchmarks/rg-core.md#rg_algo) for
+record sorting, selection, methodology, comparison versions, and limitations.
+
 ## Setup
 
 Define a strict less-than comparator, then instantiate the algorithms at file
@@ -52,9 +59,11 @@ size_t entity_count = 0;
 rg_algo_sort_EntityAlgo(entities, entity_count);
 ```
 
-The regular sort is an introsort: partitioning handles large ranges, insertion
-sort finishes small ranges, and heap sort provides the worst-case fallback. It
-is not stable.
+The regular sort recognizes already nondecreasing input and returns after one
+linear scan. Nonincreasing input is reversed in place after the same scan.
+Other inputs use introsort: partitioning handles large ranges, insertion sort
+finishes small ranges, and heap sort provides the worst-case fallback. It is
+not stable.
 
 The stable sort uses insertion-sorted runs followed by stable merging. Scratch
 must contain at least `count` elements and must not overlap the input:

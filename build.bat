@@ -20,6 +20,11 @@ if /I "%TARGET%"=="test_string" goto test_string
 if /I "%TARGET%"=="test_math" goto test_math
 if /I "%TARGET%"=="test_sdl" goto test_sdl
 if /I "%TARGET%"=="test_input" goto test_input
+if /I "%TARGET%"=="bench" goto bench
+if /I "%TARGET%"=="bench_median" goto bench_median
+if /I "%TARGET%"=="bench_algo" goto bench_algo
+if /I "%TARGET%"=="bench_hash" goto bench_hash
+if /I "%TARGET%"=="bench_containers" goto bench_containers
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -523,7 +528,92 @@ if errorlevel 1 exit /b 1
 echo All rg_math tests passed.
 exit /b 0
 
+:bench
+call "%~f0" bench_algo
+if errorlevel 1 exit /b 1
+call "%~f0" bench_hash
+if errorlevel 1 exit /b 1
+call "%~f0" bench_containers
+if errorlevel 1 exit /b 1
+if defined RG_BENCH_BUILD_ONLY (
+	echo All benchmarks built.
+) else (
+	echo All benchmarks completed.
+)
+exit /b 0
+
+:bench_median
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\bench_core_median.ps1"
+if errorlevel 1 exit /b 1
+exit /b 0
+
+:bench_algo
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "BENCH_FLAGS=/nologo /W4 /O2 /Ob3 /Oi /Ot /Oy /GL /arch:AVX2 /fp:fast /GS- /DNDEBUG /D_CRT_SECURE_NO_WARNINGS"
+set "BENCH_ALGO_FLAGS="
+set "BENCH_ALGO_OBJ="
+if defined RG_BENCH_DEPS if exist "%RG_BENCH_DEPS%\quadsort.h" if exist "%RG_BENCH_DEPS%\crumsort.h" (
+	echo Enabling quadsort and crumsort comparisons from RG_BENCH_DEPS.
+	cl %BENCH_FLAGS% /wd4100 /std:c11 /DRG_BENCH_ALGO_EXTRAS /I "%RG_BENCH_DEPS%" /c benchmarks\bench_algo_refs.c /Fo:bench_algo_refs.obj
+	if errorlevel 1 exit /b 1
+	set "BENCH_ALGO_FLAGS=/DRG_BENCH_ALGO_EXTRAS"
+	set "BENCH_ALGO_OBJ=bench_algo_refs.obj"
+)
+
+echo Building rg_algo benchmarks...
+cl %BENCH_FLAGS% /wd4100 /wd4189 /std:c++17 /EHsc %BENCH_ALGO_FLAGS% benchmarks\bench_algo.cpp %BENCH_ALGO_OBJ% /Fe:bench_algo.exe /link
+if errorlevel 1 exit /b 1
+if defined RG_BENCH_BUILD_ONLY exit /b 0
+bench_algo.exe
+if errorlevel 1 exit /b 1
+exit /b 0
+
+:bench_hash
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "BENCH_FLAGS=/nologo /W4 /O2 /Ob3 /Oi /Ot /Oy /GL /arch:AVX2 /fp:fast /GS- /DNDEBUG /D_CRT_SECURE_NO_WARNINGS"
+set "BENCH_HASH_FLAGS="
+if defined RG_BENCH_DEPS if exist "%RG_BENCH_DEPS%\stb_ds.h" (
+	echo Enabling stb_ds comparison from RG_BENCH_DEPS.
+	set "BENCH_HASH_FLAGS=/DRG_BENCH_STB_DS /I "%RG_BENCH_DEPS%""
+)
+
+echo Building rg_hash benchmarks...
+cl %BENCH_FLAGS% /wd4244 /wd4505 /std:c++17 /EHsc %BENCH_HASH_FLAGS% benchmarks\bench_hash.cpp /Fe:bench_hash.exe /link
+if errorlevel 1 exit /b 1
+if defined RG_BENCH_BUILD_ONLY exit /b 0
+bench_hash.exe
+if errorlevel 1 exit /b 1
+exit /b 0
+
+:bench_containers
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+
+set "BENCH_FLAGS=/nologo /W4 /O2 /Ob3 /Oi /Ot /Oy /GL /arch:AVX2 /fp:fast /GS- /DNDEBUG /D_CRT_SECURE_NO_WARNINGS"
+set "BENCH_CONTAINER_FLAGS="
+if defined RG_BENCH_DEPS if exist "%RG_BENCH_DEPS%\stb_ds.h" (
+	echo Enabling stb_ds comparison from RG_BENCH_DEPS.
+	set "BENCH_CONTAINER_FLAGS=%BENCH_CONTAINER_FLAGS% /DRG_BENCH_STB_DS /I "%RG_BENCH_DEPS%""
+)
+if defined RG_BENCH_DEPS if exist "%RG_BENCH_DEPS%\entt\single_include\entt\entt.hpp" (
+	echo Enabling EnTT comparison from RG_BENCH_DEPS.
+	set "BENCH_CONTAINER_FLAGS=%BENCH_CONTAINER_FLAGS% /DRG_BENCH_ENTT /I "%RG_BENCH_DEPS%\entt\single_include""
+)
+
+echo Building rg_containers benchmarks...
+cl %BENCH_FLAGS% /wd4505 /std:c++17 /EHsc %BENCH_CONTAINER_FLAGS% benchmarks\bench_containers.cpp /Fe:bench_containers.exe /link
+if errorlevel 1 exit /b 1
+if defined RG_BENCH_BUILD_ONLY exit /b 0
+bench_containers.exe
+if errorlevel 1 exit /b 1
+exit /b 0
+
 :clean
+del /q bench_algo.exe bench_hash.exe bench_containers.exe bench_algo_refs.obj 2>nul
 del /q test_sprintf.exe test_sprintf_scalar.exe test_sprintf_asm.exe 2>nul
 del /q test_sprintf_fallback.exe test_sprintf_asm_fallback.exe 2>nul
 del /q test_sprintf_secure.exe test_sprintf_asm_secure.exe 2>nul

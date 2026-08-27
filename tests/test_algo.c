@@ -51,6 +51,14 @@ static int int_less(const int* a, const int* b)
 	return *a < *b;
 }
 
+static size_t g_counted_less_calls = 0u;
+
+static int counted_int_less(const int* a, const int* b)
+{
+	g_counted_less_calls++;
+	return *a < *b;
+}
+
 static int i32_less(const i32* a, const i32* b)
 {
 	return *a < *b;
@@ -116,6 +124,7 @@ static int qsort_u64_cmp(const void* a, const void* b)
 }
 
 RG_ALGO_DEFINE(int, IntAlgo, int_less);
+RG_ALGO_DEFINE(int, CountedIntAlgo, counted_int_less);
 RG_ALGO_DEFINE(Item, ItemAlgo, item_less);
 #define RG_ALGO_I32_KEY(ptr) ((u32)(*(const i32*)(ptr)) ^ 0x80000000u)
 RG_ALGO_DEFINE(i32, I32Algo, i32_less);
@@ -155,6 +164,31 @@ static void test_sort_basic(void)
 
 	TEST_PASS();
 	printf("  PASS: sort basic\n");
+}
+
+static void test_sort_monotonic_fast_paths(void)
+{
+	int ascending[] = {-3, -3, -1, 0, 0, 4, 9, 9};
+	int descending[] = {9, 9, 4, 0, 0, -1, -3, -3};
+	const int expected[] = {-3, -3, -1, 0, 0, 4, 9, 9};
+	const size_t count = RG_ARRAY_COUNT(expected);
+
+	g_counted_less_calls = 0u;
+	rg_algo_sort_CountedIntAlgo(ascending, count);
+	TEST_ASSERT(memcmp(ascending, expected, sizeof(expected)) == 0,
+	            "ascending fast path preserves order");
+	TEST_ASSERT(g_counted_less_calls <= count * 2u + 2u,
+	            "ascending fast path remains linear");
+
+	g_counted_less_calls = 0u;
+	rg_algo_sort_CountedIntAlgo(descending, count);
+	TEST_ASSERT(memcmp(descending, expected, sizeof(expected)) == 0,
+	            "descending fast path reverses order");
+	TEST_ASSERT(g_counted_less_calls <= count * 2u + 2u,
+	            "descending fast path remains linear");
+
+	TEST_PASS();
+	printf("  PASS: monotonic sort fast paths\n");
 }
 
 static void test_sort_nth_small(void)
@@ -563,6 +597,7 @@ static void run_tests(void)
 	printf("\n=== rg_algo Correctness Tests ===\n\n");
 
 	test_sort_basic();
+	test_sort_monotonic_fast_paths();
 	test_sort_nth_small();
 	test_stable_sort();
 	test_stable_sort_patterns();

@@ -253,14 +253,47 @@
 		} \
 		size_t different = 1u; \
 		while (different < count && \
-			   !rg_algo_less_##name(&data[0], &data[different]) && \
-			   !rg_algo_less_##name(&data[different], &data[0])) \
+			   !rg_algo_less_##name(&data[different - 1u], &data[different]) && \
+			   !rg_algo_less_##name(&data[different], &data[different - 1u])) \
 		{ \
 			different++; \
 		} \
 		if (different == count) \
 		{ \
 			return; \
+		} \
+		size_t ordered = different + 1u; \
+		if (rg_algo_less_##name(&data[different], &data[different - 1u])) \
+		{ \
+			while (ordered < count && \
+				   !rg_algo_less_##name(&data[ordered - 1u], &data[ordered])) \
+			{ \
+				ordered++; \
+			} \
+			if (ordered == count) \
+			{ \
+				size_t left = 0u; \
+				size_t right = count - 1u; \
+				while (left < right) \
+				{ \
+					rg_algo_swap_##name(&data[left], &data[right]); \
+					left++; \
+					right--; \
+				} \
+				return; \
+			} \
+		} \
+		else \
+		{ \
+			while (ordered < count && \
+				   !rg_algo_less_##name(&data[ordered], &data[ordered - 1u])) \
+			{ \
+				ordered++; \
+			} \
+			if (ordered == count) \
+			{ \
+				return; \
+			} \
 		} \
 		rg_algo_range_##name stack[RG_ALGO_STACK_CAP]; \
 		size_t depth_limit = rg_algo_log2_##name(count) * 2u; \

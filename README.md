@@ -1,7 +1,9 @@
 # Reverse Gravity Core Libraries
 
+**Unapologetically fast C for real-time systems.**
+
 `rg-core` is a collection of small, portable, single-header C libraries for
-game and realtime applications. These are the foundational libraries I use to
+game and real-time applications. These are the foundational libraries I use to
 make games at Reverse Gravity, designed to be included directly in unity
 builds.
 
@@ -136,10 +138,16 @@ configuration options.
 
 `rg_sprintf` was inspired by Sean Barrett's excellent
 [`stb_sprintf`](https://github.com/nothings/stb). I set out to build a formatter
-that could go faster on common game and realtime workloads, with a portable C
+that could go faster on common game and real-time workloads, with a portable C
 fallback and optional x64 assembly acceleration.
 
 ## Performance
+
+![rg-core benchmark speedup highlights](docs/benchmarks/rg-core-speedups.svg)
+
+Speedup is comparison elapsed time divided by `rg-core` elapsed time. The
+benchmarks run implementations in the same optimized executable; results are
+machine- and workload-specific.
 
 ### rg_sprintf
 
@@ -160,7 +168,16 @@ shared 3D-engine hot-path profile across fully covered libraries. See the
 build configuration, hardware details, and the complete plotted values.
 Results are machine-specific.
 
-## Build and test
+### rg_algo, rg_hash, and rg_containers
+
+The core benchmark suite measures sorting and selection, integer-key hash-map
+operations, dynamic arrays, ring buffers, small vectors, and sparse sets. The
+[complete results and methodology](docs/benchmarks/rg-core.md) include raw
+medians, comparison versions, allocation boundaries, and limitations. The
+[benchmark sources](benchmarks) run against the public headers in this
+repository.
+
+## Build, test, and benchmark
 
 From a Visual Studio Developer Command Prompt:
 
@@ -179,6 +196,18 @@ plain-layout, reduced-module, and C++17 builds. On Windows x64, the formatter
 tests assemble and link the included MASM helper automatically. When SDL3 is
 available, the aggregate target also runs the SDL foundation and input suites;
 set `SDL3_DIR` to an SDL3 development package root to select it explicitly.
+
+Reproduce the documented three-process benchmark medians with:
+
+```bat
+build.bat bench_median
+```
+
+Use `build.bat bench` for a quicker one-process diagnostic pass.
+
+Set `RG_BENCH_DEPS` to enable the optional quadsort, crumsort, `stb_ds`, and
+EnTT comparisons described in the
+[benchmark report](docs/benchmarks/rg-core.md#reproducing-the-benchmarks).
 
 ## License and trademark
 

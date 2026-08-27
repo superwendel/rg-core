@@ -4,6 +4,13 @@
 robin-hood hash maps and sets. It is a single-header C library built on
 [`rg_mem.h`](rg_mem.md).
 
+## Performance
+
+For 500,000 reserved integer-key entries, insertion completed in 25.81 ms
+versus 79.91 ms for `std::unordered_map`; removal completed in 25.97 ms versus
+78.30 ms. See the [core benchmark report](benchmarks/rg-core.md#rg_hash) for
+`stb_ds` results, methodology, and allocation details.
+
 ## Setup
 
 Include `rg_hash.h`, initialize the global memory pool, and create an arena for
