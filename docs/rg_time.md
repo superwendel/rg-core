@@ -9,7 +9,7 @@ conversions, sleeping, and thread yielding. It depends only on
 Include the header wherever timing helpers are used:
 
 ```c
-#include "src/rg_time.h"
+#include "rg_time.h"
 
 int main(void)
 {
@@ -78,7 +78,7 @@ Define `RG_TIME_CUSTOM` as `1`, provide functions matching the native hook
 signatures, and name them before including the header:
 
 ```c
-#include "src/rg_defs.h"
+#include "rg_defs.h"
 
 static u64 platform_ticks(void);
 static u64 platform_frequency(void);
@@ -90,7 +90,7 @@ static void platform_yield(void);
 #define RG_TIME_PLATFORM_FREQUENCY platform_frequency
 #define RG_TIME_PLATFORM_SLEEP_NS platform_sleep_ns
 #define RG_TIME_PLATFORM_YIELD platform_yield
-#include "src/rg_time.h"
+#include "rg_time.h"
 ```
 
 The frequency is the number of custom ticks per second. Custom timestamp and

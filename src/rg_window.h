@@ -6,7 +6,7 @@
 // USAGE:
 //   #include "rg_window.h"
 //
-//   RgWindowDesc desc = {};
+//   RgWindowDesc desc = {0};
 //   desc.title = "My Game";
 //   desc.width = 1280;
 //   desc.height = 720;

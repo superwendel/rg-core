@@ -10,7 +10,7 @@ arena allocator.
 Include the header wherever the functions are used:
 
 ```c
-#include "src/rg_string.h"
+#include "rg_string.h"
 ```
 
 All functions have internal linkage. The header can be included directly in
@@ -139,7 +139,7 @@ Define options before including the header:
 ```c
 #define RG_STRING_SECURE
 #define RG_STRING_ASSERT(condition) my_assert(condition)
-#include "src/rg_string.h"
+#include "rg_string.h"
 ```
 
 `RG_STRING_SECURE` adds null-argument handling. Without it, null arguments are

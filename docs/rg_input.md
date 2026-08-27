@@ -8,6 +8,8 @@ Call `rg_input_update` before polling events each frame, then pass every event
 to `rg_input_process_event` or `rg_input_process_event_ex`.
 
 ```c
+#include "rg_input.h"
+
 RgInputState input = {0};
 rg_input_init(&input);
 

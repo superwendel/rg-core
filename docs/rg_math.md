@@ -66,7 +66,7 @@ and should not be treated as a performance guarantee.
 Include the umbrella header for the complete library:
 
 ```c
-#include "src/rg_math.h"
+#include "rg_math.h"
 
 rg_vec3 position;
 rg_vec3 velocity;
@@ -109,7 +109,7 @@ To trim the umbrella, define any of these before including `rg_math.h`:
 #define RG_MATH_NO_GEOM
 #define RG_MATH_NO_IO
 #define RG_MATH_NO_NOISE
-#include "src/rg_math.h"
+#include "rg_math.h"
 ```
 
 `RG_MATH_NO_QUAT` also omits Euler helpers, which depend on quaternions.
@@ -130,7 +130,7 @@ Other architectures use the scalar implementation. Define
 
 ```c
 #define RG_MATH_NO_SIMD
-#include "src/rg_math.h"
+#include "rg_math.h"
 ```
 
 SIMD vector, quaternion, and matrix types are 16-byte aligned. The explicitly
@@ -155,7 +155,7 @@ first include:
 
 ```c
 #define RG_MATH_MAX_PERF 0
-#include "src/rg_math.h"
+#include "rg_math.h"
 ```
 
 The setting is translation-unit-wide and must be consistent wherever math
@@ -182,7 +182,7 @@ space with an NDC depth range of `[-1, 1]`:
 
 ```c
 #define RG_MATH_CLIP_CONTROL RG_MATH_CLIP_CONTROL_RH_NO
-#include "src/rg_math.h"
+#include "rg_math.h"
 ```
 
 The other supported values are `RG_MATH_CLIP_CONTROL_RH_ZO`,

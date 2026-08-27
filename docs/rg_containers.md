@@ -18,7 +18,7 @@ Initialize the global memory pool, create an arena, and define container types
 at file scope:
 
 ```c
-#include "src/rg_containers.h"
+#include "rg_containers.h"
 
 RG_ARRAY_DEFINE(int, IntArray);
 RG_SMALLVEC_DEFINE(int, IntSmallVec, 8);

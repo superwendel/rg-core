@@ -10,7 +10,7 @@ allocation, and keeps all functions at internal linkage.
 Include the header directly:
 
 ```c
-#include "src/rg_bin.h"
+#include "rg_bin.h"
 
 u8 bytes[8];
 rg_bin_store_u32_le(bytes, UINT32_C(0x11223344));
@@ -126,7 +126,7 @@ Define options before the first include:
 #define RG_BIN_ASSERT(condition)    // Custom assertion macro
 #define RG_BIN_LITTLE_ENDIAN 1      // Override detected host endianness
 #define RG_BIN_FAST_UNALIGNED 1     // Opt into direct unaligned access
-#include "src/rg_bin.h"
+#include "rg_bin.h"
 ```
 
 `RG_BIN_LITTLE_ENDIAN` and `RG_BIN_FAST_UNALIGNED` accept only `0` or `1`.

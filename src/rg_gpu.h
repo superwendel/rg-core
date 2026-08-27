@@ -6,7 +6,7 @@
 // USAGE:
 //   #include "rg_gpu.h"
 //
-//   RgGpuDeviceDesc desc = {};
+//   RgGpuDeviceDesc desc = {0};
 //   desc.shader_formats = RG_GPU_DEFAULT_SHADER_FORMATS;
 //   desc.enable_debug = 1;
 //

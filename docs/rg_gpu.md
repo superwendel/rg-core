@@ -22,6 +22,8 @@ counts are explicit because SDL requires them when creating a shader or
 compute pipeline.
 
 ```c
+#include "rg_gpu.h"
+
 RgGpuShaderDesc desc = {0};
 desc.name = "sprite.vert";
 desc.stage = SDL_GPU_SHADERSTAGE_VERTEX;

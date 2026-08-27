@@ -47,6 +47,29 @@ The optional comparison build used quadsort and crumsort 1.2.1.3. Only their
 `int32` paths are reported; the benchmarked interfaces do not provide the same
 arbitrary-record, allocation-free contract as `RG_ALGO_DEFINE`.
 
+### Comparison-sort context
+
+Quadsort and crumsort are strong specialized comparison sorts, but they are not
+interchangeable with every `rg_algo` path. Quadsort is stable and merge-based.
+Crumsort is an adaptive partitioning sort that uses quadsort for suitable
+subranges. Their default entry points use auxiliary storage and obtain it
+dynamically on MSVC; this benchmark instead gives their `int32` caller-scratch
+entry points preallocated memory.
+
+On random `int32` input, crumsort and quadsort took 26.91 ms and 37.95 ms,
+respectively, versus 74.63 ms for the allocation-free `rg_algo_sort` path. The
+integer-key radix path remained fastest at 15.38 ms. The built-in comparison
+sort led on already sorted and nearly sorted input, and it accepts arbitrary C
+object types without allocation or caller scratch. The pinned external
+implementations' primary generic dispatch supports a limited set of element
+widths; quadsort provides a separate arbitrary-size path that performs
+additional allocations.
+
+The comparison libraries are therefore useful references and may be good
+project-specific choices when their storage and type constraints fit. They are
+not wholesale replacements for the general comparison, stable comparison, and
+integer-key radix contracts exposed by `rg_algo`.
+
 ## rg_hash
 
 The map benchmark inserts, finds, or removes 500,000 shuffled, unique `uint32`

@@ -12,7 +12,7 @@ tools. It is not a cryptographically secure random generator.
 Create and seed an explicit RNG state:
 
 ```c
-#include "src/rg_random.h"
+#include "rg_random.h"
 
 RgRng rng;
 rg_rng_seed(&rng, 1234);

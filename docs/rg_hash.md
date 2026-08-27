@@ -17,7 +17,7 @@ Include `rg_hash.h`, initialize the global memory pool, and create an arena for
 the table storage:
 
 ```c
-#include "src/rg_hash.h"
+#include "rg_hash.h"
 
 rg_malloc(MB(64));
 RgArena arena = rg_arena_create(MB(16));

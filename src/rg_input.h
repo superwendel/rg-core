@@ -6,7 +6,7 @@
 // USAGE:
 //   #include "rg_input.h"
 //
-//   RgInputState input = {};
+//   RgInputState input = {0};
 //   rg_input_init(&input);
 //
 //   // Per frame:
