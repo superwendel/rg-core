@@ -17,8 +17,11 @@ with MSVC 19.44.35217 for x64 using `/O2 /Ob3 /Oi /Ot /Oy /GL /arch:AVX2
 ## rg_algo
 
 Allocation, input copying, and result validation are outside the timed region.
-Radix and stable sorts receive preallocated caller scratch; allocation inside
-`std::stable_sort` remains timed. Each row sorts 1,048,576 values.
+Radix and stable sorts receive preallocated caller scratch. The optional
+quadsort and crumsort comparisons use their `int32` caller-scratch entry points
+with the same full-size scratch allocation; their default allocating entry
+points are not measured. Allocation inside `std::stable_sort` remains timed.
+Each row sorts 1,048,576 values.
 
 | Workload | rg sort | rg radix | `std::sort` | `qsort` | quadsort | crumsort |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -40,7 +43,9 @@ At one million random integers, `rg_algo_nth_element` took 7.59 ms versus 9.19
 ms for `std::nth_element`. With 256 distinct values it took 5.93 ms versus 8.95
 ms.
 
-The optional comparison build used quadsort and crumsort 1.2.1.3.
+The optional comparison build used quadsort and crumsort 1.2.1.3. Only their
+`int32` paths are reported; the benchmarked interfaces do not provide the same
+arbitrary-record, allocation-free contract as `RG_ALGO_DEFINE`.
 
 ## rg_hash
 

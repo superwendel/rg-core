@@ -143,11 +143,19 @@ fallback and optional x64 assembly acceleration.
 
 ## Performance
 
-![rg-core benchmark speedup highlights](docs/benchmarks/rg-core-speedups.svg)
+| Workload | rg-core time | Compared with | Comparison time | Speedup |
+| --- | ---: | --- | ---: | ---: |
+| [Mixed formatting](docs/rg_sprintf.md#performance) | 109.42 ns/call | `stb_sprintf` 1.10 | 306.33 ns/call | **2.8x** |
+| [Shared 3D hot-path model](docs/rg_math.md#performance) | 1.14 ms | cglm 0.9.6 | 1.50 ms | **1.3x** |
+| [One million random `int32`, radix sort](docs/benchmarks/rg-core.md#rg_algo) | 15.38 ms | `std::sort` | 89.63 ms | **5.8x** |
+| [500,000-entry reserved map insert](docs/benchmarks/rg-core.md#rg_hash) | 25.81 ms | `std::unordered_map` | 79.91 ms | **3.1x** |
+| [200,000 sparse-set inserts](docs/benchmarks/rg-core.md#rg_containers) | 0.38 ms | EnTT 3.13.2 | 2.01 ms | **5.3x** |
+| [200,000 sparse-set removals](docs/benchmarks/rg-core.md#rg_containers) | 0.20 ms | EnTT 3.13.2 | 1.70 ms | **8.5x** |
 
-Speedup is comparison elapsed time divided by `rg-core` elapsed time. The
-benchmarks run implementations in the same optimized executable; results are
-machine- and workload-specific.
+Lower elapsed time is better. Speedup is comparison time divided by `rg-core`
+time. Each comparison runs in the same optimized executable; results are
+machine- and workload-specific. Follow the workload links for the complete
+methodology and results.
 
 ### rg_sprintf
 

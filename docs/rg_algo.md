@@ -122,6 +122,42 @@ may be evaluated more than once per value. As with stable comparison sorting,
 radix scratch must contain at least `count` elements and must not overlap the
 input.
 
+## Choosing a sort
+
+| Requirement | Use |
+| --- | --- |
+| Arbitrary comparator, any C type, no allocation or caller scratch | `rg_algo_sort_name` |
+| Stable arbitrary ordering with caller scratch | `rg_algo_stable_sort_name` |
+| Stable 32-bit or 64-bit integer-key throughput with caller scratch | `rg_algo_radix_sort_name` |
+
+The comparison sort is the general-purpose default. It is especially useful
+for small arrays, already ordered data, custom or compound ordering, and cases
+where temporary storage is unavailable. Radix sort is a specialized throughput
+path for large arrays whose order can be expressed as an unsigned 32-bit or
+64-bit key. It is stable, but requires `count * sizeof(type)` caller scratch
+and is not automatically faster for every key distribution or record size.
+
+### Quadsort and crumsort
+
+Quadsort and crumsort are included as optional benchmark references, not as
+dependencies. They are excellent comparison sorts, but they do not have the
+same contract as `rg_algo_sort_name`: quadsort is stable and merge-based;
+crumsort is an adaptive partitioning sort that uses quadsort for suitable
+subranges. Their default entry points use auxiliary storage, and on MSVC obtain
+that storage dynamically. The benchmark instead calls their `int32`
+caller-scratch entry points with preallocated memory.
+
+On the published random one-million-`int32` workload, crumsort and quadsort
+took 26.91 ms and 37.95 ms, respectively, versus 74.63 ms for the
+allocation-free `rg_algo_sort_name`. The radix path took 15.38 ms. The built-in
+comparison sort instead led on already sorted and nearly sorted input. These
+results make the external sorts useful references and potentially good
+project-specific choices when scratch is acceptable, but not wholesale
+replacements for the built-in API. The pinned versions' primary generic
+dispatch supports a limited set of element widths. Quadsort has a separate
+arbitrary-size path that performs additional allocations, while
+`RG_ALGO_DEFINE` supports arbitrary C object types without allocation.
+
 ## Configuration
 
 Define options before including the header:
