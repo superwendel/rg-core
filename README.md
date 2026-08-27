@@ -1,6 +1,4 @@
-# rg-core
-
-**Unapologetically fast C for real-time systems.**
+# rg-core by Reverse Gravity
 
 `rg-core` is a set of header-only C modules designed for unity builds. It
 provides memory arenas, containers, hashing, sorting, binary I/O, strings,
@@ -135,7 +133,11 @@ Use `build.bat bench` for a quicker one-process diagnostic pass. Set
 `RG_BENCH_DEPS` to enable the optional quadsort, crumsort, `stb_ds`, and EnTT
 comparisons described in the benchmark reports.
 
-## Credits
+## Inspiration
+
+The [Handmade community](https://handmade.network/) has shaped this project
+through its emphasis on simple, direct, understandable software and deliberate
+control over the systems a game depends on.
 
 `rg_sprintf` was inspired by Sean Barrett's
 [`stb_sprintf`](https://github.com/nothings/stb). It targets the common game and
