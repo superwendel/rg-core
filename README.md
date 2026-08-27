@@ -4,6 +4,10 @@ Small, portable C libraries for game and realtime applications.
 
 ## Available libraries
 
+- `rg_sdl.h`, `rg_window.h`, `rg_input.h`, and `rg_gpu.h` — the SDL3
+  foundation used by the Reverse Gravity graphics stack: application
+  lifetime, windows, input state and ordered events, GPU uploads, and compiled
+  shader loading.
 - `rg_bin.h` — endian-aware integer and floating-point loads and stores,
   pointer and bounded cursors, and ULEB128/zigzag variable-length integers.
 - `rg_math.h` — SIMD-accelerated scalar, vector, matrix, quaternion, camera,
@@ -76,7 +80,9 @@ String is checked with baseline scalar, AVX2, forced-scalar, secure, and C++17
 builds.
 Math is checked with baseline SIMD, AVX2, checked SIMD and scalar,
 plain-layout, reduced-module, and C++17 builds. On Windows x64, the formatter
-tests assemble and link the included MASM helper automatically.
+tests assemble and link the included MASM helper automatically. When SDL3 is
+available, the aggregate target also runs the SDL foundation and input suites;
+set `SDL3_DIR` to an SDL3 development package root to select it explicitly.
 
 ## Usage
 

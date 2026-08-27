@@ -18,6 +18,8 @@ if /I "%TARGET%"=="test_random" goto test_random
 if /I "%TARGET%"=="test_algo" goto test_algo
 if /I "%TARGET%"=="test_string" goto test_string
 if /I "%TARGET%"=="test_math" goto test_math
+if /I "%TARGET%"=="test_sdl" goto test_sdl
+if /I "%TARGET%"=="test_input" goto test_input
 
 echo Unknown target: %TARGET%
 exit /b 1
@@ -67,7 +69,66 @@ call "%~f0" test_algo
 if errorlevel 1 exit /b 1
 call "%~f0" test_math
 if errorlevel 1 exit /b 1
+call :find_sdl
+if errorlevel 1 (
+	echo SDL3 not found; skipping SDL-dependent tests. Set SDL3_DIR to enable them.
+) else (
+	call "%~f0" test_sdl
+	if errorlevel 1 exit /b 1
+	call "%~f0" test_input
+	if errorlevel 1 exit /b 1
+)
 echo All tests passed.
+exit /b 0
+
+:find_sdl
+if defined SDL3_DIR goto find_sdl_validate
+for /d %%i in ("C:\libs\SDL3-*") do set "SDL3_DIR=%%i"
+if not defined SDL3_DIR if exist "C:\libs\SDL3" set "SDL3_DIR=C:\libs\SDL3"
+
+:find_sdl_validate
+if not exist "%SDL3_DIR%\include\SDL3\SDL.h" exit /b 1
+if not exist "%SDL3_DIR%\lib\x64\SDL3.lib" exit /b 1
+exit /b 0
+
+:test_sdl
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+call :find_sdl
+if errorlevel 1 (
+	echo SDL3 not found. Set SDL3_DIR to the SDL3 development package root.
+	exit /b 1
+)
+
+set "COMMON_FLAGS=/nologo /std:c11 /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+set "PATH=%SDL3_DIR%\lib\x64;%PATH%"
+
+echo Building SDL foundation tests...
+cl %COMMON_FLAGS% /I "%SDL3_DIR%\include" tests\test_sdl.c /Fe:test_sdl.exe /link /LIBPATH:"%SDL3_DIR%\lib\x64" SDL3.lib
+if errorlevel 1 exit /b 1
+test_sdl.exe
+if errorlevel 1 exit /b 1
+echo All SDL foundation tests passed.
+exit /b 0
+
+:test_input
+call :ensure_compiler
+if errorlevel 1 exit /b 1
+call :find_sdl
+if errorlevel 1 (
+	echo SDL3 not found. Set SDL3_DIR to the SDL3 development package root.
+	exit /b 1
+)
+
+set "COMMON_FLAGS=/nologo /std:c11 /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS"
+set "PATH=%SDL3_DIR%\lib\x64;%PATH%"
+
+echo Building rg_input tests...
+cl %COMMON_FLAGS% /I "%SDL3_DIR%\include" tests\test_input.c /Fe:test_input.exe /link /LIBPATH:"%SDL3_DIR%\lib\x64" SDL3.lib
+if errorlevel 1 exit /b 1
+test_input.exe
+if errorlevel 1 exit /b 1
+echo All rg_input tests passed.
 exit /b 0
 
 :test_sprintf
@@ -476,6 +537,7 @@ del /q test_random.exe test_random_portable.exe test_random_cpp.exe 2>nul
 del /q test_algo.exe test_algo_config.exe test_algo_cpp.exe 2>nul
 del /q test_string.exe test_string_avx2.exe test_string_scalar.exe test_string_secure.exe test_string_cpp.exe 2>nul
 del /q test_math.exe test_math_avx2.exe test_math_scalar.exe test_math_checked.exe test_math_plain.exe test_math_lean.exe test_math_cpp.exe 2>nul
+del /q test_sdl.exe test_input.exe 2>nul
 del /q test_sprintf.obj test_log.obj test_assert.obj test_assert_disabled.obj test_mem.obj test_hash.obj test_random.obj 2>nul
 del /q test_containers.obj test_containers_config.obj test_containers_cpp.obj 2>nul
 del /q test_time.obj test_time_custom.obj test_time_cpp.obj 2>nul
@@ -483,5 +545,6 @@ del /q test_bin.obj test_bin_unaligned.obj test_bin_bytewise.obj test_bin_cpp.ob
 del /q test_algo.obj test_algo_config.obj test_algo_cpp.obj 2>nul
 del /q test_string.obj test_string_avx2.obj test_string_scalar.obj test_string_secure.obj test_string_cpp.obj 2>nul
 del /q test_math.obj test_math_avx2.obj test_math_scalar.obj test_math_checked.obj test_math_plain.obj test_math_lean.obj test_math_cpp.obj 2>nul
+del /q test_sdl.obj test_input.obj 2>nul
 del /q rg_sprintf_asm_x64.obj 2>nul
 exit /b 0
