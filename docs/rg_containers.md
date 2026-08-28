@@ -9,7 +9,7 @@ direct element storage and require no implementation block.
 In the published benchmark, one million pushes into a reserved `rg_array`
 completed in 0.69 ms versus 1.48 ms for `std::vector`. Reserved sparse-set
 insertion completed in 0.38 ms versus 2.01 ms for EnTT. See the
-[core benchmark report](benchmarks/rg-core.md#rg_containers) for the complete
+[core benchmark report](benchmarks/rg_core.md#rg_containers) for the complete
 container results, methodology, and allocation caveats.
 
 ## Setup

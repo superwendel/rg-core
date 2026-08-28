@@ -1,16 +1,20 @@
-# rg-core by Reverse Gravity
+# rg_core by Reverse Gravity
 
-`rg-core` is a set of header-only C modules designed for unity builds. It
+`rg_core` is a set of header-only C modules designed for unity builds. It
 provides memory arenas, containers, hashing, sorting, binary I/O, strings,
 math, timing, logging, assertions, formatting, and a small SDL3 foundation.
 These are the foundational modules I use to make games at Reverse Gravity.
+
+`rg_core` is not intended to be a general-purpose answer for every use case. It
+is the code I use to make games, released because its focused approach
+outperformed many popular libraries in the workloads I measured.
 
 Functions use internal linkage, so there is no implementation macro or
 separate C library target. Stateful modules have one state per translation
 unit. A unity build therefore gives the program one shared state;
 conventionally compiled translation units each receive their own state.
 
-Add `rg-core/src` to the compiler include path and include only the modules you
+Add `rg_core/src` to the compiler include path and include only the modules you
 use. Most modules depend only on the C standard library. `rg_sdl.h`,
 `rg_window.h`, `rg_input.h`, and `rg_gpu.h` require SDL3. The hybrid formatter
 can optionally use an x64 assembly object.
@@ -35,14 +39,14 @@ int main(void)
 MSVC:
 
 ```bat
-cl /nologo /W4 /O2 /I path\to\rg-core\src example.c
+cl /nologo /W4 /O2 /I path\to\rg_core\src example.c
 ```
 
 GCC or Clang:
 
 ```sh
 cc -std=c99 -Wall -Wextra -O2 \
-   -Ipath/to/rg-core/src example.c -o example
+   -Ipath/to/rg_core/src example.c -o example
 ```
 
 ## Modules
@@ -57,6 +61,8 @@ cc -std=c99 -Wall -Wextra -O2 \
   arenas with alignment, reset, and optional secure clearing.
 - [`rg_time.h`](docs/rg_time.md) — monotonic timing, tick conversion, sleeping,
   and yielding with native and custom platform backends.
+- [`rg_prof.h`](docs/rg_prof.md) — lock-free per-thread CPU scopes and events,
+  with optional rolling frame and named-section history.
 - [`rg_log.h`](docs/rg_log.md) — severity-based logging with source locations,
   optional color and timestamps, and `rg_sprintf` formatting.
 
@@ -97,7 +103,7 @@ cc -std=c99 -Wall -Wextra -O2 \
 
 ## Performance
 
-| Workload | rg-core time | Compared with | Comparison time | Speedup |
+| Workload | rg_core time | Compared with | Comparison time | Speedup |
 | --- | ---: | --- | ---: | ---: |
 | Mixed formatting | 109.42 ns/call | `stb_sprintf` 1.10 | 306.33 ns/call | **2.8x** |
 | Shared 3D hot-path model | 1.14 ms | cglm 0.9.6 | 1.50 ms | **1.3x** |
@@ -106,7 +112,7 @@ cc -std=c99 -Wall -Wextra -O2 \
 | 200,000 sparse-set inserts | 0.38 ms | EnTT 3.13.2 | 2.01 ms | **5.3x** |
 | 200,000 sparse-set removals | 0.20 ms | EnTT 3.13.2 | 1.70 ms | **8.5x** |
 
-Lower time is better and speedup is comparison time divided by `rg-core` time;
+Lower time is better and speedup is comparison time divided by `rg_core` time;
 results are machine- and workload-specific, so see the complete
 [benchmark reports](docs/benchmarks/README.md) for charts and methodology.
 

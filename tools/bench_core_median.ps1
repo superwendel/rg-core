@@ -251,7 +251,7 @@ try
 	}
 
 	$report = [System.Collections.Generic.List[string]]::new()
-	[void]$report.Add("# rg-core benchmark outer medians")
+	[void]$report.Add("# rg_core benchmark outer medians")
 	[void]$report.Add("")
 	[void]$report.Add("Each cell is the median of $Runs fresh process runs. Each process performs one warmup and reports the median of seven samples.")
 	[void]$report.Add("")

@@ -10,7 +10,7 @@
 static int test_descriptors(void)
 {
 	RgWindowDesc window = {0};
-	window.title = "rg-core";
+	window.title = "rg_core";
 	window.width = 1280;
 	window.height = 720;
 	window.flags = SDL_WINDOW_RESIZABLE;

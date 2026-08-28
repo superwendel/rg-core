@@ -1,4 +1,4 @@
-# rg-core benchmark results
+# rg_core benchmark results
 
 These benchmarks exercise the public `rg_algo`, `rg_hash`, and
 `rg_containers` headers. They were adapted from the original `rg-core-lab`

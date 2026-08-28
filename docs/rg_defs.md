@@ -2,7 +2,7 @@
 
 `rg_defs.h` supplies the primitive aliases, compiler/platform/architecture
 detection, alignment utilities, branch hints, size helpers, and portability
-macros used throughout `rg-core`. It has no state and depends only on
+macros used throughout `rg_core`. It has no state and depends only on
 `<stddef.h>` and `<stdint.h>`.
 
 ```c
@@ -134,6 +134,6 @@ On an unknown compiler, platform, or architecture, detection macros are all
 zero and `rg_defs.h` favors compilable fallbacks: ordinary `static inline`, no
 branch or no-inline hints, no thread-local or restrict qualifier, a no-op debug
 break, and the alignment fallback described above. This does not imply that
-every other `rg-core` module supports that environment. Check the module's
+every other `rg_core` module supports that environment. Check the module's
 platform requirements and provide its documented custom backend where one is
 available.

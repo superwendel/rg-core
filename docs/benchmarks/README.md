@@ -1,6 +1,6 @@
 # Benchmark reports
 
-The benchmark suites measure public `rg-core` headers against established C
+The benchmark suites measure public `rg_core` headers against established C
 and C++ libraries in the same optimized executables. Results are specific to
 the published hardware, compiler, configuration, and workloads; they are not
 performance guarantees.
@@ -11,7 +11,10 @@ performance guarantees.
 - [`rg_math`](../rg_math.md#performance) compares individual math operations
   with cglm and a weighted 3D-engine hot-path model across fully covered math
   libraries.
-- [`rg_algo`, `rg_hash`, and `rg_containers`](rg-core.md) cover sorting,
+- [`rg_prof`](../rg_prof.md#performance) compares named event recording, frame
+  bookkeeping, frame-history consumption, and cache-line-isolated worker state
+  with fixed-section and packed-state baselines.
+- [`rg_algo`, `rg_hash`, and `rg_containers`](rg_core.md) cover sorting,
   selection, integer-key hash maps, arrays, small vectors, rings, and sparse
   sets, including methodology and optional comparison-library versions.
 

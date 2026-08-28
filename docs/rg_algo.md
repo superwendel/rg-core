@@ -8,7 +8,7 @@ functions for caller-defined C types. It depends only on
 
 On the published one-million-element random `int32` workload, the typed radix
 sort completed in 15.38 ms versus 89.63 ms for `std::sort` and 142.05 ms for
-`qsort`. See the [core benchmark report](benchmarks/rg-core.md#rg_algo) for
+`qsort`. See the [core benchmark report](benchmarks/rg_core.md#rg_algo) for
 record sorting, selection, methodology, comparison versions, and limitations.
 
 ## Setup
