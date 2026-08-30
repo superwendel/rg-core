@@ -21,33 +21,100 @@ can optionally use an x64 assembly object.
 
 ## Quick start
 
+This example opens a resizable SDL3 window and exits when you close it or press
+Escape. Install an [SDL3 development package](https://github.com/libsdl-org/SDL/releases)
+before building it. SDL3 is only required by the SDL modules; the other modules
+remain independently usable.
+
 ```c
-#include "rg_bin.h"
+#include "rg_input.h"
+#include "rg_log.h"
+#include "rg_sdl.h"
+#include "rg_window.h"
 
 int main(void)
 {
-	u8 bytes[4];
+	rg_log_init(RG_LOG_INFO);
 
-	rg_bin_store_u32_le(bytes, UINT32_C(0x11223344));
+	if (!rg_sdl_init(SDL_INIT_VIDEO))
+	{
+		RG_ERROR("SDL initialization failed: %s", rg_sdl_error());
+		return 1;
+	}
 
-	return rg_bin_load_u32_le(bytes) == UINT32_C(0x11223344)
-		? 0
-		: 1;
+	RgWindowDesc desc = {0};
+	desc.title = "rg_core quickstart";
+	desc.width = 1280;
+	desc.height = 720;
+	desc.flags = SDL_WINDOW_RESIZABLE;
+
+	SDL_Window* window = rg_window_create(&desc);
+	if (!window)
+	{
+		RG_ERROR("Window creation failed: %s", rg_sdl_error());
+		rg_sdl_quit();
+		return 1;
+	}
+
+	RgInputState input;
+	rg_input_init(&input);
+
+	int running = 1;
+	while (running)
+	{
+		rg_input_update(&input);
+
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			rg_input_process_event(&input, &event);
+
+			if (event.type == SDL_EVENT_QUIT ||
+			    event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
+			{
+				running = 0;
+			}
+		}
+
+		if (rg_input_is_key_pressed(&input, SDL_SCANCODE_ESCAPE))
+		{
+			running = 0;
+		}
+
+		// Update and render your game here.
+	}
+
+	rg_window_destroy(window);
+	rg_sdl_quit();
+	return 0;
 }
 ```
 
-MSVC:
+MSVC (from a Visual Studio Developer Command Prompt):
 
 ```bat
-cl /nologo /W4 /O2 /I path\to\rg_core\src example.c
+cl /nologo /std:c11 /W4 /O2 ^
+   /I path\to\rg_core\src /I "%SDL3_DIR%\include" example.c ^
+   /link /LIBPATH:"%SDL3_DIR%\lib\x64" SDL3.lib
+set "PATH=%SDL3_DIR%\lib\x64;%PATH%"
+example.exe
 ```
 
-GCC or Clang:
+Set `SDL3_DIR` to the SDL3 development package root before building. Its
+`lib\x64` directory must contain both `SDL3.lib` and `SDL3.dll`.
+
+GCC or Clang (with SDL3 available through `pkg-config`):
 
 ```sh
 cc -std=c99 -Wall -Wextra -O2 \
-   -Ipath/to/rg_core/src example.c -o example
+   -Ipath/to/rg_core/src $(pkg-config --cflags sdl3) \
+   example.c -o example $(pkg-config --libs sdl3)
+./example
 ```
+
+See the [`rg_sdl`](docs/rg_sdl.md), [`rg_window`](docs/rg_window.md),
+[`rg_input`](docs/rg_input.md), and [`rg_log`](docs/rg_log.md) guides for the
+complete APIs.
 
 ## Modules
 
