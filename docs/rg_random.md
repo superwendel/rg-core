@@ -2,7 +2,7 @@
 
 `rg_random.h` is a single-header xoshiro256** random generator with uniform
 sampling, array helpers, and common probability distributions. It depends only
-on [`rg_defs.h`](../src/rg_defs.h).
+on [`rg_defs.h`](rg_defs.md).
 
 It is intended for deterministic gameplay, simulation, procedural content, and
 tools. It is not a cryptographically secure random generator.

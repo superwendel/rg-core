@@ -2,7 +2,7 @@
 
 `rg_bin.h` provides endian-aware binary loads and stores, pointer-advancing
 cursors, bounded reader and writer cursors, and variable-length integer
-encoding. It depends only on [`rg_defs.h`](../src/rg_defs.h), performs no
+encoding. It depends only on [`rg_defs.h`](rg_defs.md), performs no
 allocation, and keeps all functions at internal linkage.
 
 ## Setup

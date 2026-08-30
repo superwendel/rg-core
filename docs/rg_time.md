@@ -2,7 +2,7 @@
 
 `rg_time.h` provides high-resolution monotonic timestamps, duration
 conversions, sleeping, and thread yielding. It depends only on
-[`rg_defs.h`](../src/rg_defs.h).
+[`rg_defs.h`](rg_defs.md).
 
 ## Setup
 

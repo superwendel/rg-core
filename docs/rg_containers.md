@@ -4,14 +4,6 @@
 buffers, and sparse sets backed by [`rg_mem.h`](rg_mem.md). The containers use
 direct element storage and require no implementation block.
 
-## Performance
-
-In the published benchmark, one million pushes into a reserved `rg_array`
-completed in 0.69 ms versus 1.48 ms for `std::vector`. Reserved sparse-set
-insertion completed in 0.38 ms versus 2.01 ms for EnTT. See the
-[core benchmark report](benchmarks/rg_core.md#rg_containers) for the complete
-container results, methodology, and allocation caveats.
-
 ## Setup
 
 Initialize the global memory pool, create an arena, and define container types
@@ -167,6 +159,12 @@ Likewise, verify ring initialization before calling its mutation macros when a
 custom assertion handler returns.
 
 ## Performance and complexity
+
+In the published benchmark, one million pushes into a reserved `rg_array`
+completed in 0.69 ms versus 1.48 ms for `std::vector`. Reserved sparse-set
+insertion completed in 0.38 ms versus 2.01 ms for EnTT. See the
+[core benchmark report](benchmarks/rg_core.md#rg_containers) for the complete
+container results, methodology, and allocation caveats.
 
 - Array and small-vector push/pop: amortized O(1)
 - Ordered array and small-vector insertion/removal: O(n)

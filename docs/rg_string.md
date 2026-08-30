@@ -2,7 +2,7 @@
 
 `rg_string.h` provides in-place ASCII string operations, replacement,
 splitting and joining, UTF-8 helpers, and an arena-backed `RgString`. It depends
-on [`rg_mem.h`](../src/rg_mem.h), which supplies the shared primitive types and
+on [`rg_mem.h`](rg_mem.md), which supplies the shared primitive types and
 arena allocator.
 
 ## Setup

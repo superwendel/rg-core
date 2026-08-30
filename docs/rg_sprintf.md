@@ -4,30 +4,6 @@
 realtime workloads. It is not a promise of complete libc `printf`
 compatibility for every locale or formatting edge case.
 
-## Performance
-
-![rg_sprintf benchmark results](benchmarks/rg_sprintf-vs-stb.svg)
-
-The figure compares [`stb_sprintf` 1.10](https://github.com/nothings/stb/blob/master/stb_sprintf.h),
-the portable `rg_sprintf` header, and `rg_sprintf_asm.h` linked with the MASM
-x64 helper. It reports the median of seven process runs. Each process was
-pinned to one logical CPU and raised to high priority, warmed each
-implementation with 1,000,000 calls per case, and then took the median of
-three 10,000,000-call samples.
-
-All three implementations were built into the same binary with MSVC
-19.44.35217 for x64 using `/O2 /Ob3 /Oi /Ot /Oy /GL /LTCG /arch:AVX2
-/fp:fast /GS- /DNDEBUG`. Measurements were taken on an AMD Ryzen 9 4900HS on
-Windows build 26200.9168 on August 21, 2026, using the public source snapshot
-in this repository.
-
-The cases cover `%d`, `%08u`, `%x`, `%lld`, `%.6f`, `%.6e`, `%g`, `%s`, and a
-mixed game-style status string containing a name, two integers, and two
-floating-point values. They do not use the experimental corpus from
-development, and the library contains no complete-format dispatch for these
-cases. Values are nanoseconds per call, so lower is better. Results are
-machine-specific and should not be treated as a performance guarantee.
-
 ## Integration
 
 For the fastest supported implementation, include the hybrid header:
@@ -88,6 +64,30 @@ The numeric-to-string functions return a pointer to the terminating null byte.
 `RgBuilder` provides bounded append operations for strings, characters,
 integers, floats, hexadecimal data, and formatted text. Appends truncate to the
 provided capacity while preserving null termination when capacity is nonzero.
+
+## Performance
+
+![rg_sprintf benchmark results](benchmarks/rg_sprintf-vs-stb.svg)
+
+The figure compares [`stb_sprintf` 1.10](https://github.com/nothings/stb/blob/master/stb_sprintf.h),
+the portable `rg_sprintf` header, and `rg_sprintf_asm.h` linked with the MASM
+x64 helper. It reports the median of seven process runs. Each process was
+pinned to one logical CPU and raised to high priority, warmed each
+implementation with 1,000,000 calls per case, and then took the median of
+three 10,000,000-call samples.
+
+All three implementations were built into the same binary with MSVC
+19.44.35217 for x64 using `/O2 /Ob3 /Oi /Ot /Oy /GL /LTCG /arch:AVX2
+/fp:fast /GS- /DNDEBUG`. Measurements were taken on an AMD Ryzen 9 4900HS on
+Windows build 26200.9168 on August 21, 2026, using the public source snapshot
+in this repository.
+
+The cases cover `%d`, `%08u`, `%x`, `%lld`, `%.6f`, `%.6e`, `%g`, `%s`, and a
+mixed game-style status string containing a name, two integers, and two
+floating-point values. They do not use the experimental corpus from
+development, and the library contains no complete-format dispatch for these
+cases. Values are nanoseconds per call, so lower is better. Results are
+machine-specific and should not be treated as a performance guarantee.
 
 ## Optimization approach
 

@@ -8,22 +8,35 @@ arenas for persistent, temporary, and per-frame allocations.
 ```c
 #include "rg_mem.h"
 
+typedef struct GameState
+{
+	u64 frame_index;
+} GameState;
+
+typedef struct Position
+{
+	f32 x;
+	f32 y;
+	f32 z;
+} Position;
+
 int main(void)
 {
-  if (rg_malloc(MB(256)) != 0)
-    return 1;
+	if (rg_malloc(MB(256)) != 0)
+		return 1;
 
-  RgArena persistent = rg_arena_create(MB(128));
-  RgArena scratch = rg_arena_create(MB(4));
+	RgArena persistent = rg_arena_create(MB(128));
+	RgArena scratch = rg_arena_create(MB(4));
 
-  GameState* state = RG_ARENA_PUSH_STRUCT(&persistent, GameState);
-  Vec3* positions = RG_ARENA_PUSH_ARRAY(&scratch, Vec3, 1000);
+	GameState* state = RG_ARENA_PUSH_STRUCT(&persistent, GameState);
+	Position* positions = RG_ARENA_PUSH_ARRAY(&scratch, Position, 1000);
+	int allocations_succeeded = state != NULL && positions != NULL;
 
-  rg_arena_reset(&scratch);
-  rg_arena_free(&scratch);
-  rg_arena_free(&persistent);
-  rg_free();
-  return state != NULL && positions != NULL ? 0 : 1;
+	rg_arena_reset(&scratch);
+	rg_arena_free(&scratch);
+	rg_arena_free(&persistent);
+	rg_free();
+	return allocations_succeeded ? 0 : 1;
 }
 ```
 

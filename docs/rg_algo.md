@@ -2,14 +2,7 @@
 
 `rg_algo.h` generates type-safe sorting, selection, searching, and min/max
 functions for caller-defined C types. It depends only on
-[`rg_defs.h`](../src/rg_defs.h) and performs no allocation.
-
-## Performance
-
-On the published one-million-element random `int32` workload, the typed radix
-sort completed in 15.38 ms versus 89.63 ms for `std::sort` and 142.05 ms for
-`qsort`. See the [core benchmark report](benchmarks/rg_core.md#rg_algo) for
-record sorting, selection, methodology, comparison versions, and limitations.
+[`rg_defs.h`](rg_defs.md) and performs no allocation.
 
 ## Setup
 
@@ -129,6 +122,13 @@ input.
 | Arbitrary comparator, any C type, no allocation or caller scratch | `rg_algo_sort_name` |
 | Stable arbitrary ordering with caller scratch | `rg_algo_stable_sort_name` |
 | Stable 32-bit or 64-bit integer-key throughput with caller scratch | `rg_algo_radix_sort_name` |
+
+## Performance
+
+On the published one-million-element random `int32` workload, the typed radix
+sort completed in 15.38 ms versus 89.63 ms for `std::sort` and 142.05 ms for
+`qsort`. See the [core benchmark report](benchmarks/rg_core.md#rg_algo) for
+record sorting, selection, methodology, comparison versions, and limitations.
 
 ## Configuration
 

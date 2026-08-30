@@ -116,6 +116,35 @@ See the [`rg_sdl`](docs/rg_sdl.md), [`rg_window`](docs/rg_window.md),
 [`rg_input`](docs/rg_input.md), and [`rg_log`](docs/rg_log.md) guides for the
 complete APIs.
 
+## Integration at a glance
+
+Add `rg_core/src` to the include path and include only the headers you use.
+Define configuration macros before the first include of the affected module in
+each translation unit.
+
+| Module | Additional requirements | Setup and teardown | State and lifetime |
+| --- | --- | --- | --- |
+| `rg_defs`, `rg_bin`, `rg_algo`, `rg_math` | None | No initialization | Stateless; callers own all input and output storage. |
+| `rg_random` | None | Seed each `RgRng` with `rg_rng_seed` | RNG state is caller-owned. |
+| `rg_sprintf` | Optional x64 assembly helper for the hybrid path | No initialization | Output buffers are caller-owned; formatter selection is translation-unit-wide. |
+| `rg_assert` | Optional `rg_log`; include the logger first for automatic integration | No initialization | Behavior is configured at compile time. |
+| `rg_mem` | Native virtual-memory backend | Call `rg_malloc`, create arenas, then call `rg_free` after all arena users are finished | The pool is translation-unit-local; allocations are invalidated by arena reset/free or pool release. |
+| `rg_containers`, `rg_hash` | An initialized `rg_mem` arena | Define typed containers at file scope, then initialize each value with an arena | Container storage and returned pointers are invalidated when the arena is reset or released. |
+| `rg_string` | An initialized `rg_mem` arena for `RgString`; none for in-place helpers | Initialize each `RgString`; release its backing arena after all strings are finished | String buffers are arena-owned; in-place helpers use caller buffers. |
+| `rg_time` | Native Windows, Linux, or macOS backend, or custom hooks | `rg_time_init` is optional but caches conversion frequency | The frequency cache is translation-unit-local. |
+| `rg_prof` | An initialized arena; `rg_time` when recording is enabled | Enable at compile time, initialize the profiler, and register each thread | Profiler storage is arena-backed; each producer thread owns one registered handle. |
+| `rg_log` | `rg_sprintf`; optional x64 assembly helper | `rg_log_init` optionally sets the initial level | Logger configuration and level are translation-unit-local. |
+| `rg_sdl` | SDL3 | Call `rg_sdl_init`, then destroy SDL resources before `rg_sdl_quit` | SDL owns its process-wide subsystem state. |
+| `rg_window` | SDL3 with the video subsystem initialized | Create and destroy each window | Window handles are owned by the caller. |
+| `rg_input` | SDL3 event processing | Initialize caller storage, update once per frame, then process every event | Immediate state and optional event queues are caller-owned. |
+| `rg_gpu` | SDL3 with video initialized and compiled shaders for shader-loading helpers | Create a device, claim windows, release GPU resources and windows, then destroy the device | GPU handles are caller-owned and follow SDL synchronization rules. |
+
+Functions use internal linkage. In a unity build, translation-unit-local state
+is shared by the whole program. With conventional separate compilation, each
+translation unit gets its own `rg_mem` pool, logger level, and timing cache; keep
+stateful module calls in one translation unit unless that separation is
+intentional.
+
 ## Modules
 
 ### Foundation

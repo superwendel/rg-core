@@ -5,8 +5,8 @@ per-thread buffers. It is intended for always-available development
 instrumentation in a unity-built game, with all recording compiled away unless
 `RG_PROF_ENABLED` is `1`.
 
-It depends on [`rg_mem.h`](../src/rg_mem.h) for arena storage and
-[`rg_time.h`](../src/rg_time.h) for the monotonic platform timer.
+It depends on [`rg_mem.h`](rg_mem.md) for arena storage and
+[`rg_time.h`](rg_time.md) for the monotonic platform timer.
 
 ## Setup
 

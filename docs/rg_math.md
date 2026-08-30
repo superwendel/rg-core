@@ -4,63 +4,6 @@
 provides scalar helpers, vectors, matrices, quaternions, camera transforms,
 curves, geometry queries, debug printing, and Perlin noise.
 
-## Performance
-
-![rg_math hot-path benchmark results](benchmarks/rg_math-hot-path.svg)
-
-The upper panel compares `rg_math` with [cglm 0.9.6](https://github.com/recp/cglm)
-across representative vector, matrix, and quaternion operations. Each value is
-the median elapsed time in milliseconds for 1,000,000 calls, so lower is
-better.
-
-| Operation | rg_math | cglm |
-| --- | ---: | ---: |
-| `vec3_add` | 0.39 ms | 0.39 ms |
-| `vec3_dot` | 0.92 ms | 1.24 ms |
-| `vec3_length` | 1.27 ms | 1.30 ms |
-| `vec3_normalize` | 2.05 ms | 2.53 ms |
-| `vec4_add` | 1.01 ms | 1.00 ms |
-| `mat4_mul` | 0.38 ms | 2.56 ms |
-| `mat4_mulv4` | 2.20 ms | 2.21 ms |
-| `quat_mul` | 0.40 ms | 0.40 ms |
-| `quat_normalize` | 2.57 ms | 3.51 ms |
-
-The lower panel summarizes a CPU-side 3D-engine profile covering transform
-updates, animation, physics, and culling. It is a weighted model rather than a
-trace from one application:
-
-| Area | Operations and weights |
-| --- | --- |
-| Vec3 (45) | add 8, scale 8, dot 10, length 7, normalize 10, cross 2 |
-| Mat4 (20) | multiply 8, matrix-vector multiply 12 |
-| Quaternion (15) | multiply 9, normalize 6 |
-| Vec4 (10) | add 3, scale 3, dot 2, length 1, normalize 1 |
-
-The weighted score is the sum of each median multiplied by its weight, divided
-by the 90-point shared-profile total. Only libraries with a measurement for
-every operation are shown:
-
-| Library | Weighted median | Coverage |
-| --- | ---: | ---: |
-| `rg_math` | 1.14 ms | 100% |
-| [DirectXMath 3.19](https://github.com/microsoft/DirectXMath) | 1.48 ms | 100% |
-| [cglm 0.9.6](https://github.com/recp/cglm) | 1.50 ms | 100% |
-| [GLM 1.1.0](https://github.com/g-truc/glm) | 3.65 ms | 100% |
-
-The current public headers and all comparison libraries were built into the
-same C++17 benchmark executable with MSVC 19.44.35217 for x64 using `/O2 /Ob3
-/Oi /Ot /Oy /GL /LTCG /arch:AVX2 /fp:fast /GS- /DNDEBUG`. The default
-`RG_MATH_MAX_PERF=1`, `RG_MATH_USE_LIBC=1`, and `RG_MATH_LIBC_ALIASES=1`
-configuration was used. Each benchmark group ran in a fresh process; the
-figure reports the median of seven runs after a 10,000-call warmup per
-operation.
-
-Measurements were taken on an AMD Ryzen 9 4900HS on Windows build 26200.9168.
-HandmadeMath is not shown because the development harness intentionally
-configures it without SIMD. The development harness and comparison-library
-sources are not distributed in this repository. Results are machine-specific
-and should not be treated as a performance guarantee.
-
 ## Usage
 
 Include the umbrella header for the complete library:
@@ -212,6 +155,63 @@ enabled in debug builds and compiles to no-ops when `NDEBUG` is defined. Define
 When printing is enabled, `rg_math_io.h` uses `rg_sprintf_hybrid.h`. Define
 `RG_MATH_IO_NO_SPRINTF_INCLUDE` only when a compatible `rg_sprintf` API was
 already included earlier in the translation unit.
+
+## Performance
+
+![rg_math hot-path benchmark results](benchmarks/rg_math-hot-path.svg)
+
+The upper panel compares `rg_math` with [cglm 0.9.6](https://github.com/recp/cglm)
+across representative vector, matrix, and quaternion operations. Each value is
+the median elapsed time in milliseconds for 1,000,000 calls, so lower is
+better.
+
+| Operation | rg_math | cglm |
+| --- | ---: | ---: |
+| `vec3_add` | 0.39 ms | 0.39 ms |
+| `vec3_dot` | 0.92 ms | 1.24 ms |
+| `vec3_length` | 1.27 ms | 1.30 ms |
+| `vec3_normalize` | 2.05 ms | 2.53 ms |
+| `vec4_add` | 1.01 ms | 1.00 ms |
+| `mat4_mul` | 0.38 ms | 2.56 ms |
+| `mat4_mulv4` | 2.20 ms | 2.21 ms |
+| `quat_mul` | 0.40 ms | 0.40 ms |
+| `quat_normalize` | 2.57 ms | 3.51 ms |
+
+The lower panel summarizes a CPU-side 3D-engine profile covering transform
+updates, animation, physics, and culling. It is a weighted model rather than a
+trace from one application:
+
+| Area | Operations and weights |
+| --- | --- |
+| Vec3 (45) | add 8, scale 8, dot 10, length 7, normalize 10, cross 2 |
+| Mat4 (20) | multiply 8, matrix-vector multiply 12 |
+| Quaternion (15) | multiply 9, normalize 6 |
+| Vec4 (10) | add 3, scale 3, dot 2, length 1, normalize 1 |
+
+The weighted score is the sum of each median multiplied by its weight, divided
+by the 90-point shared-profile total. Only libraries with a measurement for
+every operation are shown:
+
+| Library | Weighted median | Coverage |
+| --- | ---: | ---: |
+| `rg_math` | 1.14 ms | 100% |
+| [DirectXMath 3.19](https://github.com/microsoft/DirectXMath) | 1.48 ms | 100% |
+| [cglm 0.9.6](https://github.com/recp/cglm) | 1.50 ms | 100% |
+| [GLM 1.1.0](https://github.com/g-truc/glm) | 3.65 ms | 100% |
+
+The current public headers and all comparison libraries were built into the
+same C++17 benchmark executable with MSVC 19.44.35217 for x64 using `/O2 /Ob3
+/Oi /Ot /Oy /GL /LTCG /arch:AVX2 /fp:fast /GS- /DNDEBUG`. The default
+`RG_MATH_MAX_PERF=1`, `RG_MATH_USE_LIBC=1`, and `RG_MATH_LIBC_ALIASES=1`
+configuration was used. Each benchmark group ran in a fresh process; the
+figure reports the median of seven runs after a 10,000-call warmup per
+operation.
+
+Measurements were taken on an AMD Ryzen 9 4900HS on Windows build 26200.9168.
+HandmadeMath is not shown because the development harness intentionally
+configures it without SIMD. The development harness and comparison-library
+sources are not distributed in this repository. Results are machine-specific
+and should not be treated as a performance guarantee.
 
 ## Build verification
 
